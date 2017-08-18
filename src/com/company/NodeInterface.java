@@ -2,13 +2,13 @@ package com.company;
 
 import java.awt.*;
 
-public interface Node {
+public interface NodeInterface {
 
     void show(Graphics g);
 
-    void calculateForce(Node body);
+    void calculateForce(NodeInterface body);
 
-    void merge(Node body);
+    void merge(NodeInterface body);
 
     float getCenterOfMassPosX();
 

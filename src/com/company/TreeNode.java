@@ -3,7 +3,7 @@ package com.company;
 import java.awt.*;
 import java.util.*;
 
-public class TreeNode implements Node {
+public class TreeNode extends Node {
 
     private int _bodyCounter = 0;
 
@@ -12,9 +12,9 @@ public class TreeNode implements Node {
     private int _startY;
 
     private TreeNode nw, ne, sw, se;
-    private Node _body;
+    private NodeInterface _body;
 
-    private Vector<Node> nodes = new Vector<>(1);
+    private Vector<NodeInterface> nodes = new Vector<>(1);
 
     public TreeNode(int length, int startX, int startY) {
 
@@ -36,7 +36,7 @@ public class TreeNode implements Node {
         return this._body.getMass();
     }
 
-    public void merge(Node body) {
+    public void merge(NodeInterface body) {
 
         if (this._body == null) {
             this._body = body;
@@ -48,7 +48,7 @@ public class TreeNode implements Node {
     public void show(Graphics g) {
 
         Color originalColor = g.getColor();
-        for (Node body : this.nodes) {
+        for (NodeInterface body : this.nodes) {
 
             body.show(g);
         }
@@ -66,7 +66,7 @@ public class TreeNode implements Node {
         g.setColor(originalColor);
     }
 
-    public void calculateForce(Node body) {
+    public void calculateForce(NodeInterface body) {
 
         // No more elements in this node
         if (this._bodyCounter == 1) {
@@ -88,7 +88,7 @@ public class TreeNode implements Node {
             } else {
 
                 //Try it one lvl deeper
-                for (Node node : this.nodes) {
+                for (NodeInterface node : this.nodes) {
 
                     node.calculateForce(body);
                 }
@@ -96,7 +96,7 @@ public class TreeNode implements Node {
         }
     }
 
-    public void add(Node body) {
+    public void add(NodeInterface body) {
 
         if (this._bodyCounter == 0) {
 
@@ -129,6 +129,7 @@ public class TreeNode implements Node {
         this._updateCenterOfMass(body);
     }
 
+    private TreeNode getQuadrant(NodeInterface body) {
 
         TreeNode node;
         if (this._length == 1) {
@@ -201,9 +202,9 @@ public class TreeNode implements Node {
     /**
      * Updates center of mass of this node with the new one.
      *
-     * @param body the Node to be added to this
+     * @param body the NodeInterface to be added to this
      */
-    private void _updateCenterOfMass(Node body) {
+    private void _updateCenterOfMass(NodeInterface body) {
 
         this.merge(body);
         this._bodyCounter++;

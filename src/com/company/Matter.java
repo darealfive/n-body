@@ -2,7 +2,7 @@ package com.company;
 
 import java.awt.*;
 
-public class Matter implements Node {
+public class Matter extends Node {
 
     public static final double G = 6.674 * Math.pow(10, -11);
 
@@ -20,20 +20,16 @@ public class Matter implements Node {
         return this._posY;
     }
 
-    public void calculateForce(Node body) {
+    public void calculateForce(NodeInterface body) {
 
         if (!this.equals(body)) {
 
-            double force, distance, distanceX, distanceY;
-            distanceX = Math.abs(this._posX - body.getCenterOfMassPosX());
-            distanceY = Math.abs(this._posY - body.getCenterOfMassPosY());
-
-            distance = Math.hypot(distanceX, distanceY);
+            double force, distance;
+            distance = this.getDistanceTo(body);
 
             // First, calculate the force between two masses
             // F = (G * m1 * m2) / r^2
-
-            force = (G * this._mass * body.getMass()) / distance;
+            force = (G * this._mass * body.getMass()) / Math.pow(distance, 2);
         }
     }
 
@@ -58,7 +54,7 @@ public class Matter implements Node {
         this._posY = posY;
     }
 
-    public void merge(Node body) {
+    public void merge(NodeInterface body) {
         float newMass = body.getMass();
         this._posX = ((this._posX * this._mass) + (body.getCenterOfMassPosX() * newMass)) / (this._mass + newMass);
         this._posY = ((this._posY * this._mass) + (body.getCenterOfMassPosY() * newMass)) / (this._mass + newMass);
