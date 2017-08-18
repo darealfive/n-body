@@ -1,7 +1,7 @@
 package com.company;
 
 import java.awt.*;
-import java.util.Vector;
+import java.util.*;
 
 public class TreeNode implements Node {
 
@@ -118,9 +118,6 @@ public class TreeNode implements Node {
                 // The next smallest quadrant will also have a length of 1 which means the recursion wont terminate
                 // so we have to set the body into the next free quadrant OR if there is no free quadrant left, pick the
                 // last non-free quadrant and put the particle there and try again.
-                if (this._length == 1) {
-
-                }
                 subQuadrant.add(oldBody);
             }
 
@@ -139,6 +136,22 @@ public class TreeNode implements Node {
         int posYendOfNorth = this._startY + quadrantSideLength;
 
         TreeNode node;
+
+        if (this._length == 1) {
+
+            node = null;
+            if (nw == null) {
+                node = nw = new TreeNode(1, 1, 1);
+            } else if (ne == null) {
+                node = ne = new TreeNode(1, 1, 1);
+            } else if (sw == null) {
+                node = sw = new TreeNode(1, 1, 1);
+            } else if (se == null) {
+                node = se = new TreeNode(1, 1, 1);
+            }
+
+            return (node == null) ? nw : node;
+        }
 
         //Is it in a north quadrant?
         if (body.getCenterOfMassPosY() < posYendOfNorth) {
