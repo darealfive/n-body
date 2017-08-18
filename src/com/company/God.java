@@ -1,7 +1,6 @@
 package com.company;
 
 import java.util.Vector;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class God {
 
