@@ -22,17 +22,19 @@ public class Matter implements Node {
 
     public void calculateForce(Node body) {
 
-        double force, distance, distanceX, distanceY;
+        if (!this.equals(body)) {
 
-        distanceX = Math.abs(this._posX - body.getCenterOfMassPosX());
-        distanceY = Math.abs(this._posY - body.getCenterOfMassPosY());
+            double force, distance, distanceX, distanceY;
+            distanceX = Math.abs(this._posX - body.getCenterOfMassPosX());
+            distanceY = Math.abs(this._posY - body.getCenterOfMassPosY());
 
-        distance = Math.hypot(distanceX, distanceY);
+            distance = Math.hypot(distanceX, distanceY);
 
-        // First, calculate the force between two masses
-        // F = (G * m1 * m2) / r^2
+            // First, calculate the force between two masses
+            // F = (G * m1 * m2) / r^2
 
-        force = (G * this._mass * body.getMass()) / Math.pow(distance, 2);
+            force = (G * this._mass * body.getMass()) / distance;
+        }
     }
 
     /*public void mergeWith(Matter body) {
