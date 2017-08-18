@@ -129,15 +129,8 @@ public class TreeNode implements Node {
         this._updateCenterOfMass(body);
     }
 
-    private TreeNode getQuadrant(Node body) {
-
-        int posX, posY;
-        int quadrantSideLength = (this._length / 2);
-        int posXendOfWest = this._startX + quadrantSideLength;
-        int posYendOfNorth = this._startY + quadrantSideLength;
 
         TreeNode node;
-
         if (this._length == 1) {
 
             node = null;
@@ -154,6 +147,10 @@ public class TreeNode implements Node {
             return (node == null) ? nw : node;
         }
 
+        int posX, posY;
+        int quadrantSideLength = (this._length / 2);
+        int posXendOfWest = this._startX + quadrantSideLength;
+        int posYendOfNorth = this._startY + quadrantSideLength;
         //Is it in a north quadrant?
         if (body.getCenterOfMassPosY() < posYendOfNorth) {
 
