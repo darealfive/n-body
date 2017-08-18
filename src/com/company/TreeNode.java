@@ -5,6 +5,8 @@ import java.util.*;
 
 public class TreeNode extends Node {
 
+    public static final short MAC_TRESHOLD = 1;
+
     private int _bodyCounter = 0;
 
     private int _length;
@@ -76,12 +78,9 @@ public class TreeNode extends Node {
 
         } else {
 
-            //Get distance between particle and center of mass
-            //Calculate relation between distance and length of quadrant
-
-            boolean treshold = false;
-
-            if (treshold) {
+            double mac = this.getMAC(body);
+            //Calculate MAC (multipole acceptance criterion)
+            if (this.getMAC(body) >= MAC_TRESHOLD) {
 
                 // Calculate force to body by using center of mass
                 body.calculateForce(this._body);
@@ -94,6 +93,17 @@ public class TreeNode extends Node {
                 }
             }
         }
+    }
+
+    /**
+     * Gets the actual MAC (Multipole-Acceptance-Criterion) to a given body
+     *
+     * @param body
+     * @return
+     */
+    private double getMAC(NodeInterface body) {
+
+        return this.getDistanceTo(body) / this._length;
     }
 
     public void add(NodeInterface body) {
