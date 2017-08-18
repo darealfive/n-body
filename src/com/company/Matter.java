@@ -33,13 +33,6 @@ public class Matter extends Node {
         }
     }
 
-    /*public void mergeWith(Matter body) {
-        float newMass = body.getMass();
-        this._posX = ((this._posX * this._mass) + (body.getCenterOfMassPosX() * newMass)) / (this._mass + newMass);
-        this._posY = ((this._posY * this._mass) + (body.getCenterOfMassPosY() * newMass)) / (this._mass + newMass);
-        this._mass += newMass;
-    }*/
-
     /**
      * Note: position must be relative (room). Can I fix this?
      *
