@@ -17,12 +17,6 @@ public class BarnesHutTree {
             rootTreeNode.add(body);
         }
 
-        for (Matter body : space.bodies) {
-
-            rootTreeNode.calculateForce(body);
-        }
-
-
         return rootTreeNode;
     }
 }

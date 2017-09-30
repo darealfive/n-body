@@ -6,17 +6,11 @@ import java.util.Vector;
 
 public class SpaceTime extends JPanel {
 
-    private long passedTime, currentTimeStep;
+    private long currentTimeStep;
 
     private TreeNode _rootNode;
 
-    public Vector<Matter> bodies;
-
-    //private long timePassedBy;
-
-    public SpaceTime() {
-
-    }
+    Vector<Matter> bodies;
 
     @Override
     public void paint(Graphics g) {
@@ -30,20 +24,42 @@ public class SpaceTime extends JPanel {
         }
     }
 
-    public void run() {
+    void run() {
 
-        BarnesHutTree tree;
-        this.passedTime = System.currentTimeMillis();
+        long currentTimeStep;
+        BarnesHutTree tree = new BarnesHutTree(this);
 
-        //while (true) {
+        //Time left is of course 0 :)
+        double passedTime = 0;
+        // Now the time starts running
+        this.currentTimeStep = System.nanoTime();
 
-        this.currentTimeStep = System.currentTimeMillis() - this.passedTime;
-        this.passedTime = System.currentTimeMillis();
-        System.out.println(this.currentTimeStep);
-        tree = new BarnesHutTree(this);
-        this._rootNode = tree.build();
+        while (true) {
 
-        this.repaint();
-        //}
+            this._rootNode = tree.build();
+            // Measure time how long it took to build the tree. Only the mass distribution is calculated.
+            // In all the following iterations the time needed to fully calc the tree is also in the time.
+            currentTimeStep = System.nanoTime();
+
+            this.repaint();
+
+            passedTime = new Long(currentTimeStep - this.currentTimeStep).doubleValue() / 1_000_000_000;
+            this.currentTimeStep = currentTimeStep;
+
+            applyPhysics(passedTime);
+        }
+    }
+
+    private void applyPhysics(double passedTime) {
+
+        for (Matter body : this.bodies) {
+
+            this._rootNode.calculateForce(body, passedTime);
+        }
+
+        for (Matter body : this.bodies) {
+
+            body.applyPhysics();
+        }
     }
 }
