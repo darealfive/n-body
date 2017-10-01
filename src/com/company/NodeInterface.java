@@ -6,13 +6,13 @@ public interface NodeInterface {
 
     void show(Graphics g);
 
-    void calculateForce(NodeInterface body);
+    void calculateForce(NodeInterface body, double timePassed);
 
     void merge(NodeInterface body);
 
-    float getCenterOfMassPosX();
+    double getCenterOfMassPosX();
 
-    float getCenterOfMassPosY();
+    double getCenterOfMassPosY();
 
     float getMass();
 }

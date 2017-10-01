@@ -46,6 +46,7 @@ public class SpaceTime extends JPanel {
             passedTime = new Long(currentTimeStep - this.currentTimeStep).doubleValue() / 1_000_000_000;
             this.currentTimeStep = currentTimeStep;
 
+            passedTime = 1;
             applyPhysics(passedTime);
         }
     }

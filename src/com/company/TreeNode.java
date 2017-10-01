@@ -25,11 +25,11 @@ public class TreeNode extends Node {
         this._startY = startY;
     }
 
-    public float getCenterOfMassPosX() {
+    public double getCenterOfMassPosX() {
         return this._body.getCenterOfMassPosX();
     }
 
-    public float getCenterOfMassPosY() {
+    public double getCenterOfMassPosY() {
         return this._body.getCenterOfMassPosY();
     }
 
@@ -60,36 +60,33 @@ public class TreeNode extends Node {
         // Draw pseudo body slightly different
         if (this._bodyCounter > 1) {
 
-            int length = 10;
-            g.setColor(new Color(255, 0, 0, 100));
-            g.fillArc((int) (this.getCenterOfMassPosX() - (length / 2)), (int) (this.getCenterOfMassPosY() - (length / 2)), length, length, 0, 360);
+            this._body.show(g);
         }
 
         g.setColor(originalColor);
     }
 
-    public void calculateForce(NodeInterface body) {
+    public void calculateForce(NodeInterface body, double timePassed) {
 
         // No more elements in this node
         if (this._bodyCounter == 1) {
 
             // Calculate force to body directly
-            body.calculateForce(this._body);
+            body.calculateForce(this._body, timePassed);
 
         } else {
 
-            double mac = this.getMAC(body);
             //Calculate MAC (multipole acceptance criterion)
             if (this.getMAC(body) >= MAC_TRESHOLD) {
 
                 // Calculate force to body by using center of mass
-                body.calculateForce(this._body);
+                body.calculateForce(this._body, timePassed);
             } else {
 
                 //Try it one lvl deeper
                 for (NodeInterface node : this.nodes) {
 
-                    node.calculateForce(body);
+                    node.calculateForce(body, timePassed);
                 }
             }
         }
@@ -122,7 +119,7 @@ public class TreeNode extends Node {
                 // "Clone" the properties of the old body to be able to safely put it deeper into the recursion tree.
                 // This way we can keep it virtually here and modify its properties without effecting the body deeper
                 // in the tree.
-                Node oldBody = new Matter(this._body.getCenterOfMassPosX(), this._body.getCenterOfMassPosY(), this._body.getMass());
+                Node oldBody = new VirtualMatter(this._body.getCenterOfMassPosX(), this._body.getCenterOfMassPosY(), this._body.getMass());
                 subQuadrant = this.getQuadrant(this._body);
 
                 // The next smallest quadrant will also have a length of 1 which means the recursion wont terminate

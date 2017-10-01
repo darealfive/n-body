@@ -2,78 +2,46 @@ package com.company;
 
 import java.awt.*;
 
-public class Matter extends Node {
+public class Matter extends VirtualMatter implements NodeInterface{
 
-    public static final double G = 6.674 * Math.pow(10, -11);
+    private double _vectorX, _vectorY, _vectorSumX, _vectorSumY;
 
-    private float _mass;
-
-    private float _posX, _posY;
-
-    private float _vectorX, _vectorY;
-
-    public float getCenterOfMassPosX() {
-        return this._posX;
+    private double getPositionWithVectorSumX() {
+        return getCenterOfMassPosX() + _vectorSumX * 80000;
     }
 
-    public float getCenterOfMassPosY() {
-        return this._posY;
+    private double getPositionWithVectorSumY() {
+        return getCenterOfMassPosY() + _vectorSumY * 80000;
     }
 
-    private float getPositionWithVectorX() {
-        return _posX + _vectorX;
+    private double getPositionWithVectorX() {
+        return getCenterOfMassPosX() + 10 * _vectorX * 800000000;
     }
 
-    private float getPositionWithVectorY() {
-        return _posY + _vectorY;
+    private double getPositionWithVectorY() {
+        return getCenterOfMassPosY() + 10 * _vectorY * 800000000;
     }
 
-    public void calculateForce(NodeInterface body) {
+    public void applyPhysics() {
+        _posX += _vectorSumX;
+        _posY += _vectorSumY;
+    }
 
-        if (!this.equals(body)) {
+    public void calculateForce(NodeInterface body, double timePassed) {
 
-            double distanceSquared, acceleration, force, radians;
+        if (!equals(body)) {
 
-            distanceSquared = Math.pow(this.getDistanceTo(body), 2);
-
-            // Firstly, calculate the force which takes effect on this particle
-            // F = (G * m1 * m2) / d^2
-            force = (G * this._mass * body.getMass()) / distanceSquared;
-
-            // Secondly, the force will lead to vector changes on the current force vectors
-            // The amount of change is determined by looking to the actual force compared with the position of both particles
-            // relatively to each other PLUS the actual vector of the current particle.
-
-            // This is the acceleration which acts on this particle = m/s2
-            acceleration = force / this._mass;
-
-            //acceleration *= 1000000000;
-            //acceleration *= 500000;
-
-
-            double x1, x2, y1, y2;
-            x1 = getCenterOfMassPosX();
-            y1 = getCenterOfMassPosY();
-            x2 = body.getCenterOfMassPosX();
-            y2 = body.getCenterOfMassPosY();
-
-            // Radian between two masses
-            radians = Math.atan((y2 - y1) / (x2 - x1));
-
-            radians = Math.atan2((y2 - y1), (x2 - x1));
-
-            // The distance my particle would move as hypotenuse in meters, alias "magnitude of the vector"
-            double vectorMagnitude = (acceleration / 2) * Math.pow(SECONDS_PASSED_BY, 2);
+            super.calculateForce(body, timePassed);
 
             double sinAlpha = Math.sin(radians);
             double cosAlpha = Math.cos(radians);
             // sin(alpha) = oppositeSide / hypotenuse
-            double vectorY = vectorMagnitude * sinAlpha;
+            _vectorY = vectorMagnitude * sinAlpha;
             // cos(alpha) = adjacentSide / hypotenuse
-            double vectorX = vectorMagnitude * cosAlpha;
+            _vectorX = vectorMagnitude * cosAlpha;
 
-            this._vectorX += vectorX;
-            this._vectorY += vectorY;
+            this._vectorSumX += _vectorX;
+            this._vectorSumY += _vectorY;
         }
     }
 
@@ -84,29 +52,38 @@ public class Matter extends Node {
      * @param posY
      * @param mass
      */
-    public Matter(float posX, float posY, float mass) {
+    public Matter(double vectorX, double vectorY, float posX, double posY, float mass) {
 
+        this._vectorSumX = vectorX;
+        this._vectorSumY = vectorY;
         this._mass = mass;
         this._posX = posX;
         this._posY = posY;
-    }
-
-    public void merge(NodeInterface body) {
-        float newMass = body.getMass();
-        this._posX = ((this._posX * this._mass) + (body.getCenterOfMassPosX() * newMass)) / (this._mass + newMass);
-        this._posY = ((this._posY * this._mass) + (body.getCenterOfMassPosY() * newMass)) / (this._mass + newMass);
-        this._mass += newMass;
-    }
-
-    public float getMass() {
-
-        return this._mass;
     }
 
     public void show(Graphics g) {
 
         int length = 10;
 
+        Color orig = g.getColor();
+
+        g.setColor(new Color(100, 150, 10));
         g.drawArc((int) (this._posX - (length / 2)), (int) (this._posY - (length / 2)), length, length, 0, 360);
+
+        g.setColor(new Color(0, 0, 255));
+        int newPosX = ((int) getPositionWithVectorSumX());
+        int newPosY = ((int) getPositionWithVectorSumY());
+        int oldPosX = (int) _posX;
+        int oldPosY = (int) _posY;
+        g.drawLine(oldPosX, oldPosY, newPosX, oldPosY);
+        g.drawLine(oldPosX, oldPosY, newPosX, newPosY);
+        g.drawLine(newPosX, oldPosY, newPosX, newPosY);
+
+        g.setColor(new Color(255, 0, 0));
+        newPosX = ((int) getPositionWithVectorX());
+        newPosY = ((int) getPositionWithVectorY());
+        g.drawLine(oldPosX, oldPosY, newPosX, newPosY);
+
+        g.setColor(orig);
     }
 }
