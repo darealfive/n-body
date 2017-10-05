@@ -12,10 +12,7 @@ public class God {
 
             AppGameContainer app = new AppGameContainer(new Game("Particle simulation"));
 
-            int dimension = (int) Math.pow(2, 9);
-            dimension = 768;
-
-            app.setDisplayMode(dimension, dimension, false);
+            app.setDisplayMode(1024, 768, false);
             app.setTargetFrameRate(60);
             app.setShowFPS(false);
             app.setVSync(true);

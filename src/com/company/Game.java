@@ -17,7 +17,11 @@ public class Game extends BasicGame {
 
     @Override
     public void init(GameContainer gameContainer) throws SlickException {
-        universe = new Universe(gameContainer.getWidth(), gameContainer.getHeight());
+
+        int universeSideLength = Integer.highestOneBit((gameContainer.getWidth() > gameContainer.getHeight()) ?
+                gameContainer.getHeight() :
+                gameContainer.getWidth());
+        universe = new Universe(universeSideLength, universeSideLength);
         generateBodies(universe, 4);
     }
 
@@ -45,7 +49,7 @@ public class Game extends BasicGame {
         universe.space.bodies.addElement(new Matter(0.15, 0, 190, 280, 600000000));
         universe.space.bodies.addElement(new Matter(-0.15, 0, 200, 320, 600000000));
 
-        universe.space.bodies.addElement(new DebugMatter(0.1,0,200, 550, 6000));
+        universe.space.bodies.addElement(new DebugMatter(0.1, 0, 200, 560, 6000));
         //universe.space.bodies.addElement(new DebugMatter(0.08,0,200, 550, 999999999999999999L));
 
         /*universe.space.bodies.addElement(new Matter(0.005, 0, 200, 450, 6000));
