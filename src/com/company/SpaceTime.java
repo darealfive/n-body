@@ -10,7 +10,16 @@ public class SpaceTime {
 
     private TreeNode _rootNode;
 
-    Vector<Matter> bodies;
+    private Vector<Mass> bodies = new Vector<>();
+
+    public Vector<Mass> getBodies() {
+        return bodies;
+    }
+
+    void addMass(Mass object) {
+
+        bodies.addElement(object);
+    }
 
     public int getWidth() {
         return width;
@@ -46,7 +55,7 @@ public class SpaceTime {
      */
     private void applyPhysics() {
 
-        for (Matter body : this.bodies) {
+        for (Mass body : this.bodies) {
 
             body.applyPhysics();
         }

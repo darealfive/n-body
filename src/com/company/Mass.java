@@ -101,4 +101,7 @@ public class Mass extends Node {
 
         g.setColor(orig);
     }
+
+    void applyPhysics() {
+    }
 }

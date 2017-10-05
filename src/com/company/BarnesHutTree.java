@@ -12,12 +12,12 @@ public class BarnesHutTree {
     TreeNode build(double delta) {
 
         TreeNode rootTreeNode = new TreeNode(this.space.getWidth(), 0, 0);
-        for (Matter body : space.bodies) {
+        for (Mass body : space.getBodies()) {
 
             rootTreeNode.add(body);
         }
 
-        for (Matter body : space.bodies) {
+        for (Mass body : space.getBodies()) {
 
             rootTreeNode.calculateForce(body, delta);
         }

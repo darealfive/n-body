@@ -9,7 +9,7 @@ public class DebugMatter extends Matter {
         return new Color(200, 150, 10);
     }
 
-    public DebugMatter(double posX, double posY, long mass) {
+    public DebugMatter(double posX, double posY, double mass) {
         this(0, 0, posX, posY, mass);
     }
 
@@ -22,7 +22,7 @@ public class DebugMatter extends Matter {
      * @param posY
      * @param mass
      */
-    DebugMatter(double vectorX, double vectorY, double posX, double posY, long mass) {
+    DebugMatter(double vectorX, double vectorY, double posX, double posY, double mass) {
 
         super(vectorX, vectorY, posX, posY, mass);
     }
@@ -62,7 +62,7 @@ public class DebugMatter extends Matter {
         renderVectorSum(g);
         renderActualVector(g);
 
-        //g.setColor(getColor());
+        g.drawString(String.format("Acc: %s", acceleration), 10, 10);
 
         g.setColor(originalColor);
     }
