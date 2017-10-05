@@ -5,6 +5,9 @@ import org.newdawn.slick.Graphics;
 
 public class Matter extends Mass implements NodeInterface {
 
+    private static final short vectorSumAmplification = 100;
+    private static final short vectorAmplification = vectorSumAmplification * 10;
+
     protected Color getColor() {
         return new Color(100, 150, 10);
     }
@@ -12,19 +15,19 @@ public class Matter extends Mass implements NodeInterface {
     private double _vectorX, _vectorY, _vectorSumX, _vectorSumY;
 
     double getPositionWithVectorSumX() {
-        return getCenterOfMassPosX() + _vectorSumX * 100;
+        return getCenterOfMassPosX() + _vectorSumX * vectorSumAmplification;
     }
 
     double getPositionWithVectorSumY() {
-        return getCenterOfMassPosY() + _vectorSumY * 100;
+        return getCenterOfMassPosY() + _vectorSumY * vectorSumAmplification;
     }
 
     double getPositionWithVectorX() {
-        return getCenterOfMassPosX() + (_vectorX * 1000);
+        return getCenterOfMassPosX() + (_vectorX * vectorAmplification);
     }
 
     double getPositionWithVectorY() {
-        return getCenterOfMassPosY() + (_vectorY * 1000);
+        return getCenterOfMassPosY() + (_vectorY * vectorAmplification);
     }
 
     void applyPhysics() {
