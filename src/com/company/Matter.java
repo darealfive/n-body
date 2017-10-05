@@ -1,6 +1,7 @@
 package com.company;
 
-import java.awt.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 
 public class Matter extends VirtualMatter implements NodeInterface{
 
@@ -61,6 +62,32 @@ public class Matter extends VirtualMatter implements NodeInterface{
         this._posY = posY;
     }
 
+    private void renderVectorSum(Graphics g) {
+
+        g.setColor(new Color(0, 0, 255));
+
+        int oldPosX = (int) _posX;
+        int oldPosY = (int) _posY;
+        int newPosX = ((int) getPositionWithVectorSumX());
+        int newPosY = ((int) getPositionWithVectorSumY());
+
+        g.drawLine(oldPosX, oldPosY, newPosX, oldPosY);
+        g.drawLine(oldPosX, oldPosY, newPosX, newPosY);
+        g.drawLine(newPosX, oldPosY, newPosX, newPosY);
+    }
+
+    private void renderActualVector(Graphics g) {
+
+        g.setColor(new Color(255, 0, 0));
+
+        int oldPosX = (int) _posX;
+        int oldPosY = (int) _posY;
+        int newPosX = ((int) getPositionWithVectorX());
+        int newPosY = ((int) getPositionWithVectorY());
+
+        g.drawLine(oldPosX, oldPosY, newPosX, newPosY);
+    }
+
     public void show(Graphics g) {
 
         int length = 10;
@@ -70,19 +97,8 @@ public class Matter extends VirtualMatter implements NodeInterface{
         g.setColor(new Color(100, 150, 10));
         g.drawArc((int) (this._posX - (length / 2)), (int) (this._posY - (length / 2)), length, length, 0, 360);
 
-        g.setColor(new Color(0, 0, 255));
-        int newPosX = ((int) getPositionWithVectorSumX());
-        int newPosY = ((int) getPositionWithVectorSumY());
-        int oldPosX = (int) _posX;
-        int oldPosY = (int) _posY;
-        g.drawLine(oldPosX, oldPosY, newPosX, oldPosY);
-        g.drawLine(oldPosX, oldPosY, newPosX, newPosY);
-        g.drawLine(newPosX, oldPosY, newPosX, newPosY);
-
-        g.setColor(new Color(255, 0, 0));
-        newPosX = ((int) getPositionWithVectorX());
-        newPosY = ((int) getPositionWithVectorY());
-        g.drawLine(oldPosX, oldPosY, newPosX, newPosY);
+        renderActualVector(g);
+        renderVectorSum(g);
 
         g.setColor(orig);
     }

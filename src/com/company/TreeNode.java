@@ -1,6 +1,7 @@
 package com.company;
 
-import java.awt.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 import java.util.*;
 
 public class TreeNode extends Node {
@@ -77,7 +78,7 @@ public class TreeNode extends Node {
         } else {
 
             //Calculate MAC (multipole acceptance criterion)
-            if (this.getMAC(body) >= MAC_TRESHOLD) {
+            if (this.getMAC(body) < MAC_TRESHOLD) {
 
                 // Calculate force to body by using center of mass
                 body.calculateForce(this._body, timePassed);
@@ -100,7 +101,7 @@ public class TreeNode extends Node {
      */
     private double getMAC(NodeInterface body) {
 
-        return this.getDistanceTo(body) / this._length;
+        return this._length / this.getDistanceTo(body);
     }
 
     public void add(NodeInterface body) {

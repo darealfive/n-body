@@ -1,6 +1,7 @@
 package com.company;
 
-import java.awt.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 
 /**
  * VirtualMatter is a Matter which can not exists in a real universe because it has no vectors.
@@ -53,7 +54,7 @@ public class VirtualMatter extends Node {
         }
     }
 
-    public VirtualMatter() {
+    VirtualMatter() {
 
     }
 

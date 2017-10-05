@@ -1,6 +1,6 @@
 package com.company;
 
-import java.awt.*;
+import org.newdawn.slick.Graphics;
 
 public interface NodeInterface {
 
