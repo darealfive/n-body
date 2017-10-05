@@ -170,7 +170,9 @@ public class TreeNode extends Node {
                 node = se = new TreeNode(1, 1, 1);
             }
 
-            return (node == null) ? nw : node;
+            node = (node == null) ? nw : node;
+            nodes.add(node);
+            return node;
         }
 
         int posX, posY;
