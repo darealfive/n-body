@@ -14,7 +14,7 @@ public class Mass extends Node {
 
     private static final double G = 6.674 * Math.pow(10, -11);
 
-    long _mass;
+    double _mass;
 
     double _posX, _posY;
 
@@ -42,7 +42,7 @@ public class Mass extends Node {
      * @param posY
      * @param mass
      */
-    Mass(double posX, double posY, long mass) {
+    Mass(double posX, double posY, double mass) {
 
         this._mass = mass;
         this._posX = posX;
@@ -79,13 +79,13 @@ public class Mass extends Node {
     }
 
     public void merge(NodeInterface body) {
-        float newMass = body.getMass();
+        double newMass = body.getMass();
         this._posX = ((this._posX * this._mass) + (body.getCenterOfMassPosX() * newMass)) / (this._mass + newMass);
         this._posY = ((this._posY * this._mass) + (body.getCenterOfMassPosY() * newMass)) / (this._mass + newMass);
         this._mass += newMass;
     }
 
-    public long getMass() {
+    public double getMass() {
 
         return this._mass;
     }

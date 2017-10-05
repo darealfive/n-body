@@ -60,7 +60,7 @@ public class Matter extends Mass implements NodeInterface {
      * @param posY
      * @param mass
      */
-    Matter(double vectorX, double vectorY, double posX, double posY, long mass) {
+    Matter(double vectorX, double vectorY, double posX, double posY, double mass) {
 
         this._vectorSumX = vectorX;
         this._vectorSumY = vectorY;

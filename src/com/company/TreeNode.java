@@ -38,7 +38,7 @@ public class TreeNode extends Node {
         return this._body.getCenterOfMassPosY();
     }
 
-    public long getMass() {
+    public double getMass() {
 
         return this._body.getMass();
     }
