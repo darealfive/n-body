@@ -27,10 +27,7 @@ public class Game extends BasicGame {
 
     @Override
     public void update(GameContainer gameContainer, int delta) throws SlickException {
-
-        double time = ((double) delta);
-        //System.out.println(time);
-        universe.live(time);
+        universe.live(((double) delta) / 1000);
     }
 
     @Override
