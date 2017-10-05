@@ -55,14 +55,14 @@ public class Mass extends Node {
 
             // Firstly, calculate the force which takes effect on this particle
             // F = (G * m1 * m2) / d^2
-            force = (G * getMass() * body.getMass()) / Math.pow(getDistanceTo(body), 2);
+            force = (G * _mass * body.getMass()) / Math.pow(getDistanceTo(body), 2);
 
             // Secondly, the force will lead to vector changes on the current force vectors
             // The amount of change is determined by looking to the actual force compared with the position of both particles
             // relatively to each other PLUS the actual vector of the current particle.
 
             // This is the acceleration which acts on this particle = m/s2
-            acceleration = force / getMass();
+            acceleration = force / _mass;
 
             double x1, x2, y1, y2;
             x1 = getCenterOfMassPosX();
