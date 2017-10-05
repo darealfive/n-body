@@ -2,11 +2,15 @@ package com.company;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+
 import java.util.*;
 
 public class TreeNode extends Node {
 
-    public static final short MAC_TRESHOLD = 1;
+    private boolean fill = false;
+    private Color frameColor = new Color(255, 255, 255);
+
+    private static final short MAC_TRESHOLD = 1;
 
     private int _bodyCounter = 0;
 
@@ -19,7 +23,7 @@ public class TreeNode extends Node {
 
     private Vector<NodeInterface> nodes = new Vector<>(1);
 
-    public TreeNode(int length, int startX, int startY) {
+    TreeNode(int length, int startX, int startY) {
 
         this._length = length;
         this._startX = startX;
@@ -34,7 +38,7 @@ public class TreeNode extends Node {
         return this._body.getCenterOfMassPosY();
     }
 
-    public float getMass() {
+    public long getMass() {
 
         return this._body.getMass();
     }
@@ -56,7 +60,17 @@ public class TreeNode extends Node {
             body.show(g);
         }
 
-        g.drawRect(this._startX, this._startY, this._length, this._length);
+        g.setColor(frameColor);
+        if (fill) {
+
+            Color c = new Color(255, 255, 255, 100);
+            g.setColor(c);
+            g.fillRect(this._startX, this._startY, this._length, this._length);
+            g.setColor(frameColor);
+        } else {
+
+            g.drawRect(this._startX, this._startY, this._length, this._length);
+        }
 
         // Draw pseudo body slightly different
         if (this._bodyCounter > 1) {
@@ -78,8 +92,11 @@ public class TreeNode extends Node {
         } else {
 
             //Calculate MAC (multipole acceptance criterion)
-            if (this.getMAC(body) < MAC_TRESHOLD) {
+            if (getMAC(body) < MAC_TRESHOLD) {
 
+                if (body instanceof DebugMatter) {
+                    this.fill = true;
+                }
                 // Calculate force to body by using center of mass
                 body.calculateForce(this._body, timePassed);
             } else {
@@ -96,15 +113,15 @@ public class TreeNode extends Node {
     /**
      * Gets the actual MAC (Multipole-Acceptance-Criterion) to a given body
      *
-     * @param body
-     * @return
+     * @param body to test the length/distance ratio against
+     * @return mac
      */
     private double getMAC(NodeInterface body) {
 
-        return this._length / this.getDistanceTo(body);
+        return this._length / getDistanceTo(body);
     }
 
-    public void add(NodeInterface body) {
+    void add(NodeInterface body) {
 
         if (this._bodyCounter == 0) {
 
@@ -120,7 +137,7 @@ public class TreeNode extends Node {
                 // "Clone" the properties of the old body to be able to safely put it deeper into the recursion tree.
                 // This way we can keep it virtually here and modify its properties without effecting the body deeper
                 // in the tree.
-                Node oldBody = new VirtualMatter(this._body.getCenterOfMassPosX(), this._body.getCenterOfMassPosY(), this._body.getMass());
+                Node oldBody = new Mass(this._body.getCenterOfMassPosX(), this._body.getCenterOfMassPosY(), this._body.getMass());
                 subQuadrant = this.getQuadrant(this._body);
 
                 // The next smallest quadrant will also have a length of 1 which means the recursion wont terminate

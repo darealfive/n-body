@@ -4,10 +4,10 @@ import org.newdawn.slick.Graphics;
 
 public class Universe {
 
-    int width, height;
-    public SpaceTime space;
+    private int width, height;
+    SpaceTime space;
 
-    public int getWidth() {
+    int getWidth() {
         return width;
     }
 
@@ -15,19 +15,19 @@ public class Universe {
         return height;
     }
 
-    public Universe(int width, int height) {
+    Universe(int width, int height) {
 
         this.width = width;
         this.height = height;
         space = new SpaceTime(width, height);
     }
 
-    public void live(double delta) {
+    void live(double delta) {
 
         space.run(delta);
     }
 
-    public void render(Graphics graphics) {
+    void render(Graphics graphics) {
 
         space.render(graphics);
     }

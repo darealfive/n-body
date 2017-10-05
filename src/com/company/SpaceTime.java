@@ -7,7 +7,6 @@ import java.util.Vector;
 public class SpaceTime {
 
     private int width, height;
-    private long currentTimeStep;
 
     private TreeNode _rootNode;
 

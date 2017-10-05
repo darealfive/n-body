@@ -3,27 +3,31 @@ package com.company;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-public class Matter extends VirtualMatter implements NodeInterface{
+public class Matter extends Mass implements NodeInterface {
+
+    protected Color getColor() {
+        return new Color(100, 150, 10);
+    }
 
     private double _vectorX, _vectorY, _vectorSumX, _vectorSumY;
 
-    private double getPositionWithVectorSumX() {
-        return getCenterOfMassPosX() + _vectorSumX * 80000;
+    double getPositionWithVectorSumX() {
+        return getCenterOfMassPosX() + _vectorSumX * 100;
     }
 
-    private double getPositionWithVectorSumY() {
-        return getCenterOfMassPosY() + _vectorSumY * 80000;
+    double getPositionWithVectorSumY() {
+        return getCenterOfMassPosY() + _vectorSumY * 100;
     }
 
-    private double getPositionWithVectorX() {
-        return getCenterOfMassPosX() + 10 * _vectorX * 800000000;
+    double getPositionWithVectorX() {
+        return getCenterOfMassPosX() + (_vectorX * 1000);
     }
 
-    private double getPositionWithVectorY() {
-        return getCenterOfMassPosY() + 10 * _vectorY * 800000000;
+    double getPositionWithVectorY() {
+        return getCenterOfMassPosY() + (_vectorY * 1000);
     }
 
-    public void applyPhysics() {
+    void applyPhysics() {
         _posX += _vectorSumX;
         _posY += _vectorSumY;
     }
@@ -53,7 +57,7 @@ public class Matter extends VirtualMatter implements NodeInterface{
      * @param posY
      * @param mass
      */
-    public Matter(double vectorX, double vectorY, float posX, double posY, float mass) {
+    Matter(double vectorX, double vectorY, double posX, double posY, long mass) {
 
         this._vectorSumX = vectorX;
         this._vectorSumY = vectorY;
@@ -62,43 +66,14 @@ public class Matter extends VirtualMatter implements NodeInterface{
         this._posY = posY;
     }
 
-    private void renderVectorSum(Graphics g) {
-
-        g.setColor(new Color(0, 0, 255));
-
-        int oldPosX = (int) _posX;
-        int oldPosY = (int) _posY;
-        int newPosX = ((int) getPositionWithVectorSumX());
-        int newPosY = ((int) getPositionWithVectorSumY());
-
-        g.drawLine(oldPosX, oldPosY, newPosX, oldPosY);
-        g.drawLine(oldPosX, oldPosY, newPosX, newPosY);
-        g.drawLine(newPosX, oldPosY, newPosX, newPosY);
-    }
-
-    private void renderActualVector(Graphics g) {
-
-        g.setColor(new Color(255, 0, 0));
-
-        int oldPosX = (int) _posX;
-        int oldPosY = (int) _posY;
-        int newPosX = ((int) getPositionWithVectorX());
-        int newPosY = ((int) getPositionWithVectorY());
-
-        g.drawLine(oldPosX, oldPosY, newPosX, newPosY);
-    }
-
     public void show(Graphics g) {
 
         int length = 10;
 
         Color orig = g.getColor();
 
-        g.setColor(new Color(100, 150, 10));
+        g.setColor(getColor());
         g.drawArc((int) (this._posX - (length / 2)), (int) (this._posY - (length / 2)), length, length, 0, 360);
-
-        renderActualVector(g);
-        renderVectorSum(g);
 
         g.setColor(orig);
     }

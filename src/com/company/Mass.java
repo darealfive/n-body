@@ -4,16 +4,19 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 /**
- * VirtualMatter is a Matter which can not exists in a real universe because it has no vectors.
- * No vector is impossible because the gravitational effect appears on infinity dimensions and would effect this particle.
+ * Mass represents a mass in the spacetime. It has a center of mass but it has no vectors.
  */
-public class VirtualMatter extends Node {
+public class Mass extends Node {
+
+    protected Color getColor() {
+        return new Color(255, 0, 0, 100);
+    }
 
     public static final double G = 6.674 * Math.pow(10, -11);
 
-    protected float _mass;
+    long _mass;
 
-    protected double _posX, _posY;
+    double _posX, _posY;
 
     public double getCenterOfMassPosX() {
         return this._posX;
@@ -54,7 +57,7 @@ public class VirtualMatter extends Node {
         }
     }
 
-    VirtualMatter() {
+    Mass() {
 
     }
 
@@ -65,7 +68,7 @@ public class VirtualMatter extends Node {
      * @param posY
      * @param mass
      */
-    public VirtualMatter(double posX, double posY, float mass) {
+    public Mass(double posX, double posY, long mass) {
 
         this._mass = mass;
         this._posX = posX;
@@ -79,18 +82,18 @@ public class VirtualMatter extends Node {
         this._mass += newMass;
     }
 
-    public float getMass() {
+    public long getMass() {
 
         return this._mass;
     }
 
     public void show(Graphics g) {
 
-        int length = 10;
+        int length = 5;
 
         Color orig = g.getColor();
 
-        g.setColor(new Color(255, 0, 0, 100));
+        g.setColor(getColor());
         g.fillArc((int) (this.getCenterOfMassPosX() - (length / 2)), (int) (this.getCenterOfMassPosY() - (length / 2)), length, length, 0, 360);
 
         g.setColor(orig);

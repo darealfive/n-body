@@ -4,12 +4,12 @@ public class BarnesHutTree {
 
     private SpaceTime space;
 
-    public BarnesHutTree(SpaceTime space) {
+    BarnesHutTree(SpaceTime space) {
 
         this.space = space;
     }
 
-    public TreeNode build(double delta) {
+    TreeNode build(double delta) {
 
         TreeNode rootTreeNode = new TreeNode(this.space.getWidth(), 0, 0);
         for (Matter body : space.bodies) {

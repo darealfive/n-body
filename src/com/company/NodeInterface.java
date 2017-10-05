@@ -14,5 +14,5 @@ public interface NodeInterface {
 
     double getCenterOfMassPosY();
 
-    float getMass();
+    long getMass();
 }
