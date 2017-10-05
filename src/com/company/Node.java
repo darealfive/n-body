@@ -1,6 +1,6 @@
 package com.company;
 
-public abstract class Node implements NodeInterface {
+abstract class Node implements NodeInterface {
 
     /**
      * Gets the absolute distance between two coordinates.
@@ -10,12 +10,11 @@ public abstract class Node implements NodeInterface {
      * @param body
      * @return double
      */
-    protected double getDistanceTo(NodeInterface body) {
+    double getDistanceTo(NodeInterface body) {
 
-        double distanceX, distanceY;
-        distanceX = Math.abs(this.getCenterOfMassPosX() + (body.getCenterOfMassPosX() * -1));
-        distanceY = Math.abs(this.getCenterOfMassPosY() + (body.getCenterOfMassPosY() * -1));
-
-        return Math.hypot(distanceX, distanceY);
+        return Math.hypot(
+                Math.abs(getCenterOfMassPosX() + (body.getCenterOfMassPosX() * -1)),
+                Math.abs(getCenterOfMassPosY() + (body.getCenterOfMassPosY() * -1))
+        );
     }
 }
