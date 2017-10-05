@@ -12,7 +12,7 @@ public class Mass extends Node {
         return new Color(255, 0, 0, 100);
     }
 
-    public static final double G = 6.674 * Math.pow(10, -11);
+    private static final double G = 6.674 * Math.pow(10, -11);
 
     long _mass;
 
@@ -26,7 +26,28 @@ public class Mass extends Node {
         return this._posY;
     }
 
-    public double vectorMagnitude, radians, acceleration, force;
+    double vectorMagnitude, radians, acceleration, force;
+
+    /**
+     * Default constructor
+     */
+    Mass() {
+
+    }
+
+    /**
+     * Note: position must be relative (room). Can I fix this?
+     *
+     * @param posX
+     * @param posY
+     * @param mass
+     */
+    Mass(double posX, double posY, long mass) {
+
+        this._mass = mass;
+        this._posX = posX;
+        this._posY = posY;
+    }
 
     public void calculateForce(NodeInterface body, double timePassed) {
 
@@ -55,24 +76,6 @@ public class Mass extends Node {
             // The distance my particle would move as hypotenuse in meters, alias "magnitude of the vector"
             vectorMagnitude = (acceleration / 2) * Math.pow(timePassed, 2);
         }
-    }
-
-    Mass() {
-
-    }
-
-    /**
-     * Note: position must be relative (room). Can I fix this?
-     *
-     * @param posX
-     * @param posY
-     * @param mass
-     */
-    public Mass(double posX, double posY, long mass) {
-
-        this._mass = mass;
-        this._posX = posX;
-        this._posY = posY;
     }
 
     public void merge(NodeInterface body) {
