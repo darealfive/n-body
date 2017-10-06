@@ -57,7 +57,30 @@ public class SpaceTime {
 
         for (Mass body : this.bodies) {
 
-            body.applyPhysics();
+            body.applyPhysics(this);
         }
+    }
+
+    double determinePosX(Locatable body, double offset) {
+
+        return determinePosition(body.getCenterOfMassPosX() + offset, getWidth());
+    }
+
+    double determinePosY(Locatable body, double offset) {
+
+        return determinePosition(body.getCenterOfMassPosY() + offset, getHeight());
+    }
+
+    private double determinePosition(double relativePosition, double limited) {
+
+        if (relativePosition > limited) {
+
+            relativePosition = limited;
+        } else if (relativePosition < 0) {
+
+            relativePosition = 0;
+        }
+
+        return relativePosition;
     }
 }

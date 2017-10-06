@@ -31,8 +31,8 @@ public class DebugMatter extends Matter {
 
         g.setColor(new Color(0, 0, 255));
 
-        int oldPosX = (int) _posX;
-        int oldPosY = (int) _posY;
+        int oldPosX = (int) getCenterOfMassPosX();
+        int oldPosY = (int) getCenterOfMassPosY();
         int newPosX = ((int) getPositionWithVectorSumX());
         int newPosY = ((int) getPositionWithVectorSumY());
 
@@ -45,8 +45,8 @@ public class DebugMatter extends Matter {
 
         g.setColor(new Color(255, 0, 0));
 
-        int oldPosX = (int) _posX;
-        int oldPosY = (int) _posY;
+        int oldPosX = (int) getCenterOfMassPosX();
+        int oldPosY = (int) getCenterOfMassPosY();
         int newPosX = ((int) getPositionWithVectorX());
         int newPosY = ((int) getPositionWithVectorY());
 

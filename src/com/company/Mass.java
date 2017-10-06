@@ -16,7 +16,7 @@ public class Mass extends Node {
 
     double _mass;
 
-    double _posX, _posY;
+    private double _posX, _posY;
 
     public double getCenterOfMassPosX() {
         return this._posX;
@@ -24,6 +24,14 @@ public class Mass extends Node {
 
     public double getCenterOfMassPosY() {
         return this._posY;
+    }
+
+    protected void setCenterOfMassPosX(double centerOfMassPosX) {
+        _posX = centerOfMassPosX;
+    }
+
+    protected void setCenterOfMassPosY(double centerOfMassPosY) {
+        _posY = centerOfMassPosY;
     }
 
     double vectorMagnitude, radians, acceleration;
@@ -103,6 +111,16 @@ public class Mass extends Node {
         g.setColor(orig);
     }
 
-    void applyPhysics() {
+    protected void updatePosX(SpaceTime spaceTime, double offset) {
+
+        _posX = spaceTime.determinePosX(this, offset);
+    }
+
+    protected void updatePosY(SpaceTime spaceTime, double offset) {
+
+        _posY = spaceTime.determinePosY(this, offset);
+    }
+
+    void applyPhysics(SpaceTime spaceTime) {
     }
 }

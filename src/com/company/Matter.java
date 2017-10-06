@@ -30,9 +30,10 @@ public class Matter extends Mass {
         return getCenterOfMassPosY() + (_vectorY * vectorAmplification);
     }
 
-    void applyPhysics() {
-        _posX += _vectorSumX;
-        _posY += _vectorSumY;
+    void applyPhysics(SpaceTime spaceTime) {
+
+        updatePosX(spaceTime, _vectorSumX);
+        updatePosY(spaceTime, _vectorSumY);
     }
 
     public void calculateForce(Attractable body, double timePassed) {
@@ -64,8 +65,8 @@ public class Matter extends Mass {
 
         this._vectorSumX = vectorX;
         this._vectorSumY = vectorY;
-        this._posX = posX;
-        this._posY = posY;
+        setCenterOfMassPosX(posX);
+        setCenterOfMassPosY(posY);
         this._mass = mass;
     }
 
@@ -76,7 +77,7 @@ public class Matter extends Mass {
         Color orig = g.getColor();
 
         g.setColor(getColor());
-        g.drawArc((int) (this._posX - (length / 2)), (int) (this._posY - (length / 2)), length, length, 0, 360);
+        g.drawArc((int) (getCenterOfMassPosX() - (length / 2)), (int) (getCenterOfMassPosY() - (length / 2)), length, length, 0, 360);
 
         g.setColor(orig);
     }
