@@ -100,7 +100,7 @@ public class TreeNode extends Node {
             } else {
 
                 //Try it one lvl deeper
-                for (NodeInterface node : this.nodes) {
+                for (Attractable node : this.nodes) {
 
                     node.calculateForce(body, timePassed);
                 }
