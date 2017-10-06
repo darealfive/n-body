@@ -27,6 +27,7 @@ public class Game extends BasicGame {
 
     @Override
     public void update(GameContainer gameContainer, int delta) throws SlickException {
+
         universe.live(((double) delta) / 1000);
     }
 
@@ -40,23 +41,16 @@ public class Game extends BasicGame {
 
         int min = 0, max = universe.getWidth(), x, y;
         float mass;
-        universe.space.bodies = new Vector<>(nBodies);
 
+        //universe.space.addMass(new Mass(190, 280, 5.972 * Math.pow(10,24)));
+        //universe.space.addMass(new DebugMatter(0,0,190, 280 + 6_371_000, 1));
 
-        universe.space.bodies.addElement(new Matter(0.15, 0, 190, 280, 600000000));
-        universe.space.bodies.addElement(new Matter(-0.15, 0, 200, 320, 600000000));
+        universe.space.addMass(new Matter(0.5, 0, 250, 260, 5.972 * Math.pow(10, 14)));
+        universe.space.addMass(new Matter(-0.5, 0, 250, 250, 5.972 * Math.pow(10, 14)));
 
-        universe.space.bodies.addElement(new DebugMatter(0.1, 0, 200, 560, 6000));
-        //universe.space.bodies.addElement(new DebugMatter(0.08,0,200, 550, 999999999999999999L));
+        universe.space.addMass(new DebugMatter(-0.1, 0, 250, 359, 5.972 * Math.pow(10, 12)));
 
-        /*universe.space.bodies.addElement(new Matter(0.005, 0, 200, 450, 6000));
-        universe.space.bodies.addElement(new Matter(0, 0.005, 50, 300, 6000));
-        universe.space.bodies.addElement(new Matter(0.007, 0, 200, 290, 600000));
-        universe.space.bodies.addElement(new Matter(-0.007, 0, 200, 310, 600000));
-        universe.space.bodies.addElement(new Matter(0, -0.005, 350, 300, 6000));
-        universe.space.bodies.addElement(new Matter(-0.005, 0, 200, 150, 6000));
-        universe.space.bodies.addElement(new Matter(0, -0.00001, 250, 500, 9000));
-        /*
+        //universe.space.addMass(new DebugMatter(0.1, 0, 200, 560, 6000));
 
         /*
         universe.space.bodies.addElement(new Matter(200, 450, 6000));

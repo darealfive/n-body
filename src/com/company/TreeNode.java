@@ -19,6 +19,7 @@ public class TreeNode extends Node {
     private int _startY;
 
     private TreeNode nw, ne, sw, se;
+
     private NodeInterface _body;
 
     private Vector<NodeInterface> nodes = new Vector<>(1);
@@ -43,19 +44,16 @@ public class TreeNode extends Node {
         return this._body.getMass();
     }
 
-    public void merge(NodeInterface body) {
+    @Override
+    public void merge(Attractable body) {
 
-        if (this._body == null) {
-            this._body = body;
-        } else {
-            this._body.merge(body);
-        }
+        this._body.merge(body);
     }
 
     public void show(Graphics g) {
 
         Color originalColor = g.getColor();
-        for (NodeInterface body : this.nodes) {
+        for (Showable body : this.nodes) {
 
             body.show(g);
         }
@@ -81,7 +79,7 @@ public class TreeNode extends Node {
         g.setColor(originalColor);
     }
 
-    public void calculateForce(NodeInterface body, double timePassed) {
+    public void calculateForce(Attractable body, double timePassed) {
 
         // No more elements in this node
         if (this._bodyCounter == 1) {
@@ -116,7 +114,7 @@ public class TreeNode extends Node {
      * @param body to test the length/distance ratio against
      * @return mac
      */
-    private double getMAC(NodeInterface body) {
+    private double getMAC(Attractable body) {
 
         return this._length / getDistanceTo(body);
     }
@@ -137,7 +135,7 @@ public class TreeNode extends Node {
                 // "Clone" the properties of the old body to be able to safely put it deeper into the recursion tree.
                 // This way we can keep it virtually here and modify its properties without effecting the body deeper
                 // in the tree.
-                Node oldBody = new Mass(this._body.getCenterOfMassPosX(), this._body.getCenterOfMassPosY(), this._body.getMass());
+                NodeInterface oldBody = new Mass(this._body.getCenterOfMassPosX(), this._body.getCenterOfMassPosY(), this._body.getMass());
                 subQuadrant = this.getQuadrant(this._body);
 
                 // The next smallest quadrant will also have a length of 1 which means the recursion wont terminate
@@ -154,7 +152,7 @@ public class TreeNode extends Node {
         this._updateCenterOfMass(body);
     }
 
-    private TreeNode getQuadrant(NodeInterface body) {
+    private TreeNode getQuadrant(Locatable body) {
 
         TreeNode node;
         if (this._length == 1) {
@@ -233,7 +231,11 @@ public class TreeNode extends Node {
      */
     private void _updateCenterOfMass(NodeInterface body) {
 
-        this.merge(body);
+        if (_body == null) {
+            _body = body;
+        } else {
+            this.merge(body);
+        }
         this._bodyCounter++;
     }
 }

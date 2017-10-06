@@ -10,7 +10,7 @@ abstract class Node implements NodeInterface {
      * @param body
      * @return double
      */
-    double getDistanceTo(NodeInterface body) {
+    double getDistanceTo(Locatable body) {
 
         return Math.hypot(
                 Math.abs(getCenterOfMassPosX() + (body.getCenterOfMassPosX() * -1)),

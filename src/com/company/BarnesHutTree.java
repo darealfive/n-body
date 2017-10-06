@@ -1,6 +1,6 @@
 package com.company;
 
-public class BarnesHutTree {
+class BarnesHutTree {
 
     private SpaceTime space;
 
@@ -12,12 +12,12 @@ public class BarnesHutTree {
     TreeNode build(double delta) {
 
         TreeNode rootTreeNode = new TreeNode(this.space.getWidth(), 0, 0);
-        for (Mass body : space.getBodies()) {
+        for (NodeInterface body : space.getBodies()) {
 
             rootTreeNode.add(body);
         }
 
-        for (Mass body : space.getBodies()) {
+        for (Attractable body : space.getBodies()) {
 
             rootTreeNode.calculateForce(body, delta);
         }

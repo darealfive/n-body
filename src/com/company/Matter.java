@@ -3,7 +3,7 @@ package com.company;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-public class Matter extends Mass implements NodeInterface {
+public class Matter extends Mass {
 
     private static final short vectorSumAmplification = 100;
     private static final short vectorAmplification = vectorSumAmplification * 10;
@@ -35,7 +35,7 @@ public class Matter extends Mass implements NodeInterface {
         _posY += _vectorSumY;
     }
 
-    public void calculateForce(NodeInterface body, double timePassed) {
+    public void calculateForce(Attractable body, double timePassed) {
 
         if (!equals(body)) {
 
@@ -64,9 +64,9 @@ public class Matter extends Mass implements NodeInterface {
 
         this._vectorSumX = vectorX;
         this._vectorSumY = vectorY;
-        this._mass = mass;
         this._posX = posX;
         this._posY = posY;
+        this._mass = mass;
     }
 
     public void show(Graphics g) {

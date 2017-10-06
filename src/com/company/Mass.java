@@ -26,7 +26,8 @@ public class Mass extends Node {
         return this._posY;
     }
 
-    double vectorMagnitude, radians, acceleration, force;
+    double vectorMagnitude, radians, acceleration;
+    private double force;
 
     /**
      * Default constructor
@@ -49,7 +50,7 @@ public class Mass extends Node {
         this._posY = posY;
     }
 
-    public void calculateForce(NodeInterface body, double timePassed) {
+    public void calculateForce(Attractable body, double timePassed) {
 
         if (!equals(body)) {
 
@@ -78,7 +79,7 @@ public class Mass extends Node {
         }
     }
 
-    public void merge(NodeInterface body) {
+    public void merge(Attractable body) {
         double newMass = body.getMass();
         this._posX = ((this._posX * this._mass) + (body.getCenterOfMassPosX() * newMass)) / (this._mass + newMass);
         this._posY = ((this._posY * this._mass) + (body.getCenterOfMassPosY() * newMass)) / (this._mass + newMass);
