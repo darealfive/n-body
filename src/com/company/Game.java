@@ -42,11 +42,49 @@ public class Game extends BasicGame {
         //universe.space.addMass(new Mass(190, 280, 5.972 * Math.pow(10,24)));
         //universe.space.addMass(new DebugMatter(0,0,190, 280 + 6_371_000, 1));
 
-        double mass = 5.972 * Math.pow(10, 14);
-        universe.space.addMass(new Matter(0.5, 0, 250, 260, mass));
-        universe.space.addMass(new Matter(-0.5, 0, 250, 250, mass));
+        double mass = 3.0 * Math.pow(10, 14);
 
-        universe.space.addMass(new DebugMatter(-0.1, 0, 250, 359, 5.972 * Math.pow(10, 12)));
+        //normale Veränderungen
+        //universe.space.addMass(new Mass( 250, 265, mass));
+        //universe.space.addMass(new Mass(250, 245, mass));
+
+        int fac = 10;
+        //Nicht normale Veränderungen
+        universe.space.addMass(new DebugMatter(0.5, -0.1, 250, 285, mass*fac));
+        universe.space.addMass(new DebugMatter(-0.5, -0.1, 250, 225, mass*fac));
+
+        universe.space.addMass(new DebugMatter(0, 0, 300, 500, 2));
+
+
+        //universe.space.addMass(new Matter(0, 0, 0, 10, mass));
+        //universe.space.addMass(new Mass(0, 10, mass));
+
+        /*
+        universe.space.addMass(new DebugMatter(-0.35, 0, 100, 120, mass));
+        universe.space.addMass(new DebugMatter(0.35, 0, 100, 80, mass));
+        universe.space.addMass(new DebugMatter(0, -0.35, 80, 100, mass));
+        universe.space.addMass(new DebugMatter(0, 0.35, 120, 100, mass));
+        */
+
+
+        //universe.space.addMass(new DebugMatter(0, 0, 10, 10, mass*5));
+        //universe.space.addMass(new DebugMatter(0, 0, 200, 10, mass));
+        //universe.space.addMass(new Matter(0, 0, 500, 500, mass));
+
+
+        //universe.space.addMass(new Mass(300, 400, mass));
+        //universe.space.addMass(new Mass(300, 200, mass));
+        //universe.space.addMass(new Mass(200, 300, mass));
+        //universe.space.addMass(new Mass(400, 300, mass));
+
+
+        /*universe.space.addMass(new DebugMatter(0,-0.1,300, 400, mass));
+        universe.space.addMass(new DebugMatter(0,0.1,300, 200, mass));
+        universe.space.addMass(new DebugMatter(0,0.1,200, 300, mass));
+        universe.space.addMass(new DebugMatter(0,-0.1,400, 300, mass));
+        //TODO test this matter
+        universe.space.addMass(new DebugMatter(0, 0, 300, 300, 2));*/
+
 
         //universe.space.addMass(new DebugMatter(0.1, 0, 200, 560, 6000));
 

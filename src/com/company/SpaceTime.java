@@ -40,6 +40,9 @@ public class SpaceTime {
 
             applyPhysics();
             this._rootNode.show(graphics);
+
+            DebugMatter.maxVectorX = 0;
+            DebugMatter.maxVectorY = 0;
         }
     }
 

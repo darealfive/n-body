@@ -5,35 +5,23 @@ import org.newdawn.slick.Graphics;
 
 public class Matter extends Mass {
 
-    private static final short vectorSumAmplification = 100;
-    private static final short vectorAmplification = vectorSumAmplification * 10;
+    protected double _vectorX, _vectorY, _vectorSumX, _vectorSumY;
 
     protected Color getColor() {
         return new Color(100, 150, 10);
     }
 
-    private double _vectorX, _vectorY, _vectorSumX, _vectorSumY;
-
-    double getPositionWithVectorSumX() {
-        return getCenterOfMassPosX() + _vectorSumX * vectorSumAmplification;
-    }
-
-    double getPositionWithVectorSumY() {
-        return getCenterOfMassPosY() + _vectorSumY * vectorSumAmplification;
-    }
-
-    double getPositionWithVectorX() {
-        return getCenterOfMassPosX() + (_vectorX * vectorAmplification);
-    }
-
-    double getPositionWithVectorY() {
-        return getCenterOfMassPosY() + (_vectorY * vectorAmplification);
-    }
-
     void applyPhysics(SpaceTime spaceTime) {
+
+        _vectorSumX += _vectorX;
+        _vectorSumY += _vectorY;
 
         updatePosX(spaceTime, _vectorSumX);
         updatePosY(spaceTime, _vectorSumY);
+
+        // Reset vectors for next calculations
+        _vectorX = 0;
+        _vectorY = 0;
     }
 
     public void calculateForce(Attractable body, double timePassed) {
@@ -45,12 +33,9 @@ public class Matter extends Mass {
             double sinAlpha = Math.sin(radians);
             double cosAlpha = Math.cos(radians);
             // sin(alpha) = oppositeSide / hypotenuse
-            _vectorY = vectorMagnitude * sinAlpha;
+            _vectorY += vectorMagnitude * sinAlpha;
             // cos(alpha) = adjacentSide / hypotenuse
-            _vectorX = vectorMagnitude * cosAlpha;
-
-            this._vectorSumX += _vectorX;
-            this._vectorSumY += _vectorY;
+            _vectorX += vectorMagnitude * cosAlpha;
         }
     }
 

@@ -5,8 +5,47 @@ import org.newdawn.slick.Graphics;
 
 public class DebugMatter extends Matter {
 
+    private static final short vectorSumAmplification = 100;
+    private static final short vectorAmplification = vectorSumAmplification * 10;
+    static double maxVectorX = 0;
+    static double maxVectorY = 0;
+
+    private double lastVectorX, lastVectorY, absLastVectorX, absLastVectorY;
+
+    private double getPositionWithVectorSumX() {
+        return getCenterOfMassPosX() + _vectorSumX * vectorSumAmplification;
+    }
+
+    private double getPositionWithVectorSumY() {
+        return getCenterOfMassPosY() + _vectorSumY * vectorSumAmplification;
+    }
+
+    private double getPositionWithVectorX() {
+        return getCenterOfMassPosX() + (lastVectorX * vectorAmplification);
+    }
+
+    private double getPositionWithVectorY() {
+        return getCenterOfMassPosY() + (lastVectorY * vectorAmplification);
+    }
+
     protected Color getColor() {
         return new Color(200, 150, 10);
+    }
+
+    void applyPhysics(SpaceTime spaceTime) {
+
+        // Before super call will reset our vectors, we have to check how big they are to be able to show them
+        lastVectorX = _vectorX;
+        lastVectorY = _vectorY;
+        absLastVectorX = Math.abs(lastVectorX);
+        absLastVectorY = Math.abs(lastVectorY);
+        if (absLastVectorX > maxVectorX) {
+            maxVectorX = absLastVectorX;
+        }
+        if (absLastVectorY > maxVectorY) {
+            maxVectorY = absLastVectorY;
+        }
+        super.applyPhysics(spaceTime);
     }
 
     public DebugMatter(double posX, double posY, double mass) {
@@ -59,10 +98,28 @@ public class DebugMatter extends Matter {
 
         super.show(g);
 
+        /*g.drawString(String.format("Acc: %s", acceleration), 10, 10);
+        g.drawString(String.format("X: %s", _vectorSumX), 10, 25);
+        g.drawString(String.format("Y: %s", _vectorSumY), 10, 40);
+        g.drawString(String.format("VMag: %s", vectorMagnitude), 10, 55);
+        g.drawString(String.format("F: %s", force), 10, 70);*/
+
+        int length = 8;
+
+        double ratioVectorX, ratioVectorY;
+
+        ratioVectorX = absLastVectorX / maxVectorX;
+        Color colorVectorX = new Color(0, (int) (255 * ratioVectorX), 0);
+        g.setColor(colorVectorX);
+        g.fillArc((int) (getCenterOfMassPosX() - (length / 2)), (int) (getCenterOfMassPosY() - (length / 2)), length, length, 0, 180);
+
+        ratioVectorY = absLastVectorY / maxVectorY;
+        Color colorVectorY = new Color(0, 0, (int) (255 * ratioVectorY));
+        g.setColor(colorVectorY);
+        g.fillArc((int) (getCenterOfMassPosX() - (length / 2)), (int) (getCenterOfMassPosY() - (length / 2)), length, length, 180, 360);
+
         renderVectorSum(g);
         renderActualVector(g);
-
-        g.drawString(String.format("Acc: %s", acceleration), 10, 10);
 
         g.setColor(originalColor);
     }
