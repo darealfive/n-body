@@ -93,30 +93,50 @@ public class SpaceTime {
         //Is vector pointing to the right or bottom edge of the universe?
         if (vectorSum > 0) {
 
-            double stickyPosition = (limit - sticky);
+            //The position where the sticky part begins
+            double stickyPosition = limit - sticky;
+
             //Right or bottom edge
 
-            //Calculate the reduced penetration length
+            //Calculate the sticky penetration length trough the object
             double stickyPenetrationLength = vectorPosition - stickyPosition;
 
-            //Check whether the new position is in sticky area. Otherwise the right offset does not touch the sticky areas
+            //Check whether the new position is in sticky area. Otherwise the vector does not touch the sticky areas
             if (stickyPenetrationLength > 0) {
 
-                //double alreadyStickedLength = position - stickyPosition;
-                //stickyPenetrationLength -= alreadyStickedLength;
-
-                double factor = stickyPenetrationLength / sticky;
-                //Slow down the vector by the hypothetically sticky area penetration
-                double reducedPenetrationLength = stickyPenetrationLength * (1 - factor);
-                vectorSum -= stickyPenetrationLength - reducedPenetrationLength;
-
-                System.out.println(vectorSum);
+                vectorSum -= getVectorCorrection(position, stickyPenetrationLength, stickyPosition, sticky);
             }
 
-            return vectorSum;
+        } else {
+
+            //The position where the sticky part begins
+            double stickyPosition = 0 + sticky;
+
+            //Left or top edge
+
+            //Calculate the sticky penetration length trough the object
+            double stickyPenetrationLength = vectorPosition - stickyPosition;
+
+            //Check whether the new position is in sticky area. Otherwise the vector does not touch the sticky areas
+            if (stickyPenetrationLength < 0) {
+
+                vectorSum += getVectorCorrection(position, stickyPenetrationLength, stickyPosition, sticky);
+            }
         }
 
         return vectorSum;
+    }
+
+    private double getVectorCorrection(double bodyPosition, double stickyPenetrationLength, double stickyPosition, double stickyDimension) {
+
+        double alreadyStickedLength = bodyPosition - stickyPosition;
+        stickyPenetrationLength -= alreadyStickedLength;
+
+        double factor = stickyPenetrationLength / stickyDimension;
+        //Slow down the vector by the hypothetically sticky area penetration
+        double reducedPenetrationLength = stickyPenetrationLength * (1 - factor);
+
+        return stickyPenetrationLength - reducedPenetrationLength;
     }
 
     double determinePosX(Locatable body, double offset) {
