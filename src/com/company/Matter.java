@@ -3,7 +3,7 @@ package com.company;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-public class Matter extends Mass {
+public class Matter extends Mass implements Vectorizable {
 
     protected double _vectorX, _vectorY, _vectorSumX, _vectorSumY;
 
@@ -11,13 +11,31 @@ public class Matter extends Mass {
         return new Color(100, 150, 10);
     }
 
+    public double getVectorSumX() {
+        return _vectorSumX;
+    }
+
+    public double getVectorSumY() {
+        return _vectorSumY;
+    }
+
+    private void updateVectorSumX(SpaceTime spaceTime) {
+        _vectorSumX = spaceTime.determineVectorSumX(this, _vectorX);
+    }
+
+    private void updateVectorSumY(SpaceTime spaceTime) {
+        _vectorSumY = spaceTime.determineVectorSumY(this, _vectorY);
+    }
+
     void applyPhysics(SpaceTime spaceTime) {
 
-        _vectorSumX += _vectorX;
-        _vectorSumY += _vectorY;
+        super.applyPhysics(spaceTime);
 
-        updatePosX(spaceTime, _vectorSumX);
-        updatePosY(spaceTime, _vectorSumY);
+        updateVectorSumX(spaceTime);
+        updateVectorSumY(spaceTime);
+
+        updatePosX(spaceTime, getVectorSumX());
+        updatePosY(spaceTime, getVectorSumY());
 
         // Reset vectors for next calculations
         _vectorX = 0;

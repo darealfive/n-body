@@ -6,6 +6,14 @@ import java.util.Vector;
 
 public class SpaceTime {
 
+    /**
+     * The area dimension in percent at the edge of the universe is a bit sticky for every {@link Vectorizable} body.
+     * So they will slow down dependent till the end of the universe to a speed of 0 (if they reach the end).
+     */
+    private static final short stickyArea = 5;
+
+    private double stickyAreaDimensionX, stickyAreaDimensionY;
+
     private int width, height;
 
     private TreeNode _rootNode;
@@ -30,8 +38,12 @@ public class SpaceTime {
     }
 
     public SpaceTime(int width, int height) {
+
         this.width = width;
         this.height = height;
+
+        stickyAreaDimensionX = ((this.width / 100.0f) * (double) stickyArea);
+        stickyAreaDimensionY = ((this.height / 100.0f) * (double) stickyArea);
     }
 
     public void render(Graphics graphics) {
@@ -64,6 +76,49 @@ public class SpaceTime {
         }
     }
 
+    double determineVectorSumX(Vectorizable body, double offset) {
+        return determineVector(body.getCenterOfMassPosX(), body.getVectorSumX(), offset, getWidth(), stickyAreaDimensionX);
+    }
+
+    double determineVectorSumY(Vectorizable body, double offset) {
+        return determineVector(body.getCenterOfMassPosY(), body.getVectorSumY(), offset, getHeight(), stickyAreaDimensionY);
+    }
+
+    private double determineVector(double position, double vector, double offset, double limit, double sticky) {
+        // If vector summary points to the opposite direction of the edge of the universe, return the new vector without
+        // any changes.
+        double vectorSum = vector + offset;
+        double vectorPosition = position + vectorSum;
+
+        //Is vector pointing to the right or bottom edge of the universe?
+        if (vectorSum > 0) {
+
+            double stickyPosition = (limit - sticky);
+            //Right or bottom edge
+
+            //Calculate the reduced penetration length
+            double stickyPenetrationLength = vectorPosition - stickyPosition;
+
+            //Check whether the new position is in sticky area. Otherwise the right offset does not touch the sticky areas
+            if (stickyPenetrationLength > 0) {
+
+                //double alreadyStickedLength = position - stickyPosition;
+                //stickyPenetrationLength -= alreadyStickedLength;
+
+                double factor = stickyPenetrationLength / sticky;
+                //Slow down the vector by the hypothetically sticky area penetration
+                double reducedPenetrationLength = stickyPenetrationLength * (1 - factor);
+                vectorSum -= stickyPenetrationLength - reducedPenetrationLength;
+
+                System.out.println(vectorSum);
+            }
+
+            return vectorSum;
+        }
+
+        return vectorSum;
+    }
+
     double determinePosX(Locatable body, double offset) {
 
         return determinePosition(body.getCenterOfMassPosX() + offset, getWidth());
@@ -74,16 +129,16 @@ public class SpaceTime {
         return determinePosition(body.getCenterOfMassPosY() + offset, getHeight());
     }
 
-    private double determinePosition(double relativePosition, double limited) {
+    private double determinePosition(double position, int limited) {
 
-        if (relativePosition > limited) {
+        if (position > limited) {
 
-            relativePosition = limited;
-        } else if (relativePosition < 0) {
+            position = position % limited;
+        } else if (position < 0) {
 
-            relativePosition = 0;
+            position = limited - position;
         }
 
-        return relativePosition;
+        return position;
     }
 }
