@@ -156,7 +156,7 @@ public class SpaceTime {
             position = position % limited;
         } else if (position < 0) {
 
-            position = limited - position;
+            position = limited + position;
         }
 
         return position;
