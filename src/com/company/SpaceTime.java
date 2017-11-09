@@ -1,5 +1,6 @@
 package com.company;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import java.util.Vector;
@@ -8,7 +9,7 @@ public class SpaceTime {
 
     public double delta = 0;
     /**
-     * The area dimension in percent at the edge of the universe is a bit sticky for every {@link Vectorizable} body.
+     * The area dimension in percent at the edge of the universe is a bit sticky for every {@link Acceleratable} body.
      * So they will slow down dependent till the end of the universe to a speed of 0 (if they reach the end).
      */
     private static final short stickyArea = 5;
@@ -54,11 +55,13 @@ public class SpaceTime {
             applyPhysics();
             this._rootNode.show(graphics);
 
-            DebugMatter.maxVectorX = 0;
-            DebugMatter.maxVectorY = 0;
-            VDebugMatter.maxVelocityX = 0;
-            VDebugMatter.maxVelocityY = 0;
+            DebugMatter.maxVelocityX = 0;
+            DebugMatter.maxVelocityY = 0;
         }
+
+        // Draws the sticky area
+        graphics.setColor(new Color(255, 255, 255, 100));
+        graphics.drawRect((float) stickyAreaDimensionX, (float) stickyAreaDimensionY, 512 - (2 * (float) stickyAreaDimensionX), 512 - (2 * (float) stickyAreaDimensionY));
     }
 
     void run(double delta) {
@@ -80,30 +83,24 @@ public class SpaceTime {
         }
     }
 
-    double determineVelocityX(Vectorizable body, double deltaVelocityX) {
+    double determineVelocityX(Acceleratable body, double deltaVelocityX) {
         return determineVector(body.getCenterOfMassPosX(), body.getVelocityX(), deltaVelocityX, getWidth(), stickyAreaDimensionX);
     }
 
-    double determineVelocityY(Vectorizable body, double deltaVelocityY) {
+    double determineVelocityY(Acceleratable body, double deltaVelocityY) {
         return determineVector(body.getCenterOfMassPosY(), body.getVelocityY(), deltaVelocityY, getHeight(), stickyAreaDimensionY);
-    }
-
-    double determineVectorSumX(Vectorizable body, double offset) {
-        return determineVector(body.getCenterOfMassPosX(), body.getVectorSumX(), offset, getWidth(), stickyAreaDimensionX);
-    }
-
-    double determineVectorSumY(Vectorizable body, double offset) {
-        return determineVector(body.getCenterOfMassPosY(), body.getVectorSumY(), offset, getHeight(), stickyAreaDimensionY);
     }
 
     private double determineVector(double position, double vector, double offset, double limit, double sticky) {
         // If vector summary points to the opposite direction of the edge of the universe, return the new vector without
         // any changes.
         double vectorSum = vector + offset;
-        double vectorPosition = position + vectorSum;
+
+        // The hypothetically position the particle would be if we do not do anything
+        double vectorPosition = position + vectorSum * delta;
 
         //Is vector pointing to the right or bottom edge of the universe?
-        /*if (vectorSum > 0) {
+        if (vectorSum > 0) {
 
             //The position where the sticky part begins
             double stickyPosition = limit - sticky;
@@ -134,7 +131,7 @@ public class SpaceTime {
 
                 vectorSum += getVectorCorrection(position, stickyPenetrationLength, stickyPosition, sticky);
             }
-        }*/
+        }
 
         return vectorSum;
     }
@@ -148,7 +145,7 @@ public class SpaceTime {
         //Slow down the vector by the hypothetically sticky area penetration
         double reducedPenetrationLength = stickyPenetrationLength * (1 - factor);
 
-        return stickyPenetrationLength - reducedPenetrationLength;
+        return (stickyPenetrationLength - reducedPenetrationLength) / delta;
     }
 
     double determinePosX(Locatable body, double offset) {

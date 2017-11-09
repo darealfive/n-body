@@ -92,7 +92,7 @@ public class TreeNode extends Node {
             //Calculate MAC (multipole acceptance criterion)
             if (getMAC(body) < MAC_TRESHOLD) {
 
-                if (body instanceof VDebugMatter) {
+                if (body instanceof DebugMatter) {
                     this.fill = true;
                 }
                 // Calculate force to body by using center of mass
