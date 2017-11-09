@@ -56,6 +56,8 @@ public class SpaceTime {
 
             DebugMatter.maxVectorX = 0;
             DebugMatter.maxVectorY = 0;
+            VDebugMatter.maxVelocityX = 0;
+            VDebugMatter.maxVelocityY = 0;
         }
     }
 
@@ -76,6 +78,14 @@ public class SpaceTime {
 
             body.applyPhysics(this);
         }
+    }
+
+    double determineVelocityX(Vectorizable body, double deltaVelocityX) {
+        return determineVector(body.getCenterOfMassPosX(), body.getVelocityX(), deltaVelocityX, getWidth(), stickyAreaDimensionX);
+    }
+
+    double determineVelocityY(Vectorizable body, double deltaVelocityY) {
+        return determineVector(body.getCenterOfMassPosY(), body.getVelocityY(), deltaVelocityY, getHeight(), stickyAreaDimensionY);
     }
 
     double determineVectorSumX(Vectorizable body, double offset) {
@@ -153,13 +163,13 @@ public class SpaceTime {
 
     private double determinePosition(double position, int limited) {
 
-        /*if (position > limited) {
+        if (position > limited) {
 
             position = position % limited;
         } else if (position < 0) {
 
             position = limited + position;
-        }*/
+        }
 
         return position;
     }

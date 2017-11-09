@@ -5,6 +5,14 @@ import org.newdawn.slick.Graphics;
 
 public class Matter extends Mass implements Vectorizable {
 
+    public double getVelocityX() {
+        return 0;
+    }//TODO Delete after refactoring
+
+    public double getVelocityY() {
+        return 0;
+    }//TODO Delete after refactoring
+
     protected double _vectorX, _vectorY, _vectorSumX, _vectorSumY, _velocityX, _velocityY, _deltaVelocityX, _deltaVelocityY;
 
     protected Color getColor() {

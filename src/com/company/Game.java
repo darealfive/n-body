@@ -33,13 +33,13 @@ public class Game extends BasicGame {
 
         double time = ((double) delta) / 1000;
         //time = 1;
-        if (lastTime >= 5) {
+        /*if (lastTime >= 5) {
             try {
                 Thread.sleep(200000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         lastTime +=time;
         universe.live(time);
     }
@@ -87,28 +87,31 @@ public class Game extends BasicGame {
         universe.space.addMass(new DebugMatter(2, 0, 400, 300, 1));
         */
 
+        //universe.space.addMass(new VDebugMatter(10,10,400, 400, 1));
+
 
         //Wenn gleiche 4 Massen umeinander rotieren, so ist die Summe der X/Y Vectoren immer gleich.
         //Dabei ist der X Vector 0 wenn die Masse an den horizontalen Extrempunkten des virtuellen Kreises positioniert ist.
         //Dabei ist der Y Vector 0 wenn die Masse an den vertikalen Extrempunkten des virtuellen Kreises positioniert ist.
 
-        /*
-        universe.space.addMass(new DebugMatter(-0.35, 0, 100, 120, mass));
-        universe.space.addMass(new DebugMatter(0.35, 0, 100, 80, mass));
-        universe.space.addMass(new DebugMatter(0, -0.35, 80, 100, mass));
-        universe.space.addMass(new DebugMatter(0, 0.35, 120, 100, mass));
+        int factor = 90;
+        universe.space.addMass(new VDebugMatter(-0.35*factor, 0, 100, 120, mass));
+        universe.space.addMass(new VDebugMatter(0.35*factor, 0, 100, 80, mass));
+        universe.space.addMass(new VDebugMatter(0, -0.35*factor, 80, 100, mass));
+        universe.space.addMass(new VDebugMatter(0, 0.35*factor, 120, 100, mass));
 
-        universe.space.addMass(new DebugMatter(0, 0.35, 220, 300, mass));
-        */
+        //universe.space.addMass(new VMatter(0, 0.35, 220, 300, mass));
+
 
 
         /*//Hier herscht gleichgewicht
         universe.space.addMass(new Mass(150, 250, mass));
         universe.space.addMass(new Mass(150, 350, mass));
-        universe.space.addMass(new DebugMatter(200, 300, mass));
+        universe.space.addMass(new VMatter(0,0,200, 300, mass));
         universe.space.addMass(new Mass(250, 250, mass));
         universe.space.addMass(new Mass(250, 350, mass));
         */
+
 
 
         /*
@@ -119,9 +122,11 @@ public class Game extends BasicGame {
         universe.space.addMass(new DebugMatter(0, 0, 300, 300, 2));
         */
 
-        double earthMass = 5.972 * Math.pow(10,24);
+        /*double earthMass = 5.972 * Math.pow(10,24);
         universe.space.addMass(new Mass(200, 6_371_000, earthMass));
         universe.space.addMass(new DebugMatter(200, 0, 1));
+        universe.space.addMass(new VMatter(0,0,210, 0, 1));
+        */
 
         /*for (int i = 0; i <= nBodies; i++) {
 

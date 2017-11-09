@@ -71,7 +71,7 @@ public class Mass extends Node {
             // relatively to each other PLUS the actual vector of the current particle.
 
             // This is the acceleration which acts on this particle = m/s2
-            acceleration = 9.81;
+            acceleration =  force / _mass;
 
             double x1, x2, y1, y2;
             x1 = getCenterOfMassPosX();
