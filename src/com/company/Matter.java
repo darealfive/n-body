@@ -5,7 +5,7 @@ import org.newdawn.slick.Graphics;
 
 public class Matter extends Mass implements Vectorizable {
 
-    protected double _vectorX, _vectorY, _vectorSumX, _vectorSumY;
+    protected double _vectorX, _vectorY, _vectorSumX, _vectorSumY, _velocityX, _velocityY, _deltaVelocityX, _deltaVelocityY;
 
     protected Color getColor() {
         return new Color(100, 150, 10);
@@ -20,11 +20,11 @@ public class Matter extends Mass implements Vectorizable {
     }
 
     private void updateVectorSumX(SpaceTime spaceTime) {
-        _vectorSumX = spaceTime.determineVectorSumX(this, _vectorX);
+        _vectorSumX = spaceTime.determineVectorSumX(this, _velocityX);
     }
 
     private void updateVectorSumY(SpaceTime spaceTime) {
-        _vectorSumY = spaceTime.determineVectorSumY(this, _vectorY);
+        _vectorSumY = spaceTime.determineVectorSumY(this, _velocityY);
     }
 
     void applyPhysics(SpaceTime spaceTime) {
@@ -32,14 +32,21 @@ public class Matter extends Mass implements Vectorizable {
         super.applyPhysics(spaceTime);
 
         updateVectorSumX(spaceTime);
-        updateVectorSumY(spaceTime);
+        //updateVectorSumY(spaceTime);
 
         updatePosX(spaceTime, getVectorSumX());
         updatePosY(spaceTime, getVectorSumY());
 
+        setCenterOfMassPosY(getCenterOfMassPosY() + (_velocityY * spaceTime.delta));
+
+        _velocityY += _deltaVelocityY;
+        _velocityX += _deltaVelocityX;
+
         // Reset vectors for next calculations
         _vectorX = 0;
         _vectorY = 0;
+        //_velocityX = 0;
+        //_velocityY = 0;
     }
 
     public void calculateForce(Attractable body, double timePassed) {
@@ -50,10 +57,12 @@ public class Matter extends Mass implements Vectorizable {
 
             double sinAlpha = Math.sin(radians);
             double cosAlpha = Math.cos(radians);
+
             // sin(alpha) = oppositeSide / hypotenuse
-            _vectorY += vectorMagnitude * sinAlpha;
+            _deltaVelocityY = deltaVelocity * sinAlpha;
+
             // cos(alpha) = adjacentSide / hypotenuse
-            _vectorX += vectorMagnitude * cosAlpha;
+            _deltaVelocityX = deltaVelocity * cosAlpha;
         }
     }
 

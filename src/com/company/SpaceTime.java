@@ -6,6 +6,7 @@ import java.util.Vector;
 
 public class SpaceTime {
 
+    public double delta = 0;
     /**
      * The area dimension in percent at the edge of the universe is a bit sticky for every {@link Vectorizable} body.
      * So they will slow down dependent till the end of the universe to a speed of 0 (if they reach the end).
@@ -60,6 +61,7 @@ public class SpaceTime {
 
     void run(double delta) {
 
+        this.delta = delta;
         BarnesHutTree tree = new BarnesHutTree(this);
         this._rootNode = tree.build(delta);
     }
@@ -91,7 +93,7 @@ public class SpaceTime {
         double vectorPosition = position + vectorSum;
 
         //Is vector pointing to the right or bottom edge of the universe?
-        if (vectorSum > 0) {
+        /*if (vectorSum > 0) {
 
             //The position where the sticky part begins
             double stickyPosition = limit - sticky;
@@ -122,7 +124,7 @@ public class SpaceTime {
 
                 vectorSum += getVectorCorrection(position, stickyPenetrationLength, stickyPosition, sticky);
             }
-        }
+        }*/
 
         return vectorSum;
     }
@@ -141,23 +143,23 @@ public class SpaceTime {
 
     double determinePosX(Locatable body, double offset) {
 
-        return determinePosition(body.getCenterOfMassPosX() + offset, getWidth());
+        return determinePosition(body.getCenterOfMassPosX() + (offset * delta), getWidth());
     }
 
     double determinePosY(Locatable body, double offset) {
 
-        return determinePosition(body.getCenterOfMassPosY() + offset, getHeight());
+        return determinePosition(body.getCenterOfMassPosY() + (offset * delta), getHeight());
     }
 
     private double determinePosition(double position, int limited) {
 
-        if (position > limited) {
+        /*if (position > limited) {
 
             position = position % limited;
         } else if (position < 0) {
 
             position = limited + position;
-        }
+        }*/
 
         return position;
     }

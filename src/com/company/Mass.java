@@ -34,7 +34,7 @@ public class Mass extends Node {
         _posY = centerOfMassPosY;
     }
 
-    double vectorMagnitude, radians, acceleration;
+    double deltaVelocity, radians, acceleration;
     private double force;
 
     /**
@@ -71,7 +71,7 @@ public class Mass extends Node {
             // relatively to each other PLUS the actual vector of the current particle.
 
             // This is the acceleration which acts on this particle = m/s2
-            acceleration = force / _mass;
+            acceleration = 9.81;
 
             double x1, x2, y1, y2;
             x1 = getCenterOfMassPosX();
@@ -82,8 +82,8 @@ public class Mass extends Node {
             // Radian between two masses
             radians = Math.atan2((y2 - y1), (x2 - x1));
 
-            // The distance my particle would move as hypotenuse in meters, alias "magnitude of the vector"
-            vectorMagnitude = (acceleration / 2) * Math.pow(timePassed, 2);
+            // The velocity delta for current time
+            deltaVelocity = acceleration * timePassed;
         }
     }
 

@@ -14,8 +14,8 @@ public class God {
 
             app.setDisplayMode(1024, 768, false);
             app.setTargetFrameRate(60);
-            app.setShowFPS(false);
-            app.setVSync(true);
+            app.setShowFPS(true);
+            app.setVSync(false);
             app.start();
 
 

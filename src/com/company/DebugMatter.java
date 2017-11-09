@@ -98,8 +98,14 @@ public class DebugMatter extends Matter {
 
         super.show(g);
 
-        /*g.drawString(String.format("Acc: %s", acceleration), 10, 10);
-        g.drawString(String.format("X: %s", _vectorSumX), 10, 25);
+        double distance =  Math.abs(getCenterOfMassPosY());
+        g.drawString(String.format("Geschwindigkeit: %s", _velocityY), 10, 30);
+        g.drawString(String.format("D Geschwindigkeit: %s", _deltaVelocityY), 10, 50);
+        g.drawString(String.format("Meter: %s", distance), 10, 70);
+        g.drawString(String.format("G: %s", acceleration), 10, 90);
+        g.drawString(String.format("Gesamtzeit: %s", Game.lastTime), 10, 110);
+        g.drawString(String.format("Pos: %s", getCenterOfMassPosY()), 10, 130);
+        /*g.drawString(String.format("X: %s", _vectorSumX), 10, 25);
         g.drawString(String.format("Y: %s", _vectorSumY), 10, 40);
         g.drawString(String.format("VMag: %s", vectorMagnitude), 10, 55);
         g.drawString(String.format("F: %s", force), 10, 70);*/
