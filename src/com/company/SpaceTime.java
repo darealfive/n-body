@@ -141,7 +141,7 @@ public class SpaceTime {
         double alreadyStickedLength = bodyPosition - stickyPosition;
         stickyPenetrationLength -= alreadyStickedLength;
 
-        double factor = stickyPenetrationLength / stickyDimension;
+        double factor = (stickyPenetrationLength % stickyDimension) / stickyDimension;
         //Slow down the vector by the hypothetically sticky area penetration
         double reducedPenetrationLength = stickyPenetrationLength * (1 - factor);
 
