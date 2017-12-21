@@ -2,6 +2,8 @@ package com.company;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Point;
+import org.newdawn.slick.geom.Shape;
 
 /**
  * Mass represents a mass in the spacetime. It has a center of mass but it has no vectors.
@@ -16,32 +18,31 @@ public class Mass extends Node {
 
     double _mass;
 
-    private double _posX, _posY;
+    Shape shape;
 
     public double getCenterOfMassPosX() {
-        return this._posX;
+        return shape.getCenterX();
     }
 
     public double getCenterOfMassPosY() {
-        return this._posY;
+        return shape.getCenterY();
     }
 
-    protected void setCenterOfMassPosX(double centerOfMassPosX) {
-        _posX = centerOfMassPosX;
+    private void setCenterOfMassPosX(double centerOfMassPosX) {
+        shape.setCenterX((float) centerOfMassPosX);
     }
 
-    protected void setCenterOfMassPosY(double centerOfMassPosY) {
-        _posY = centerOfMassPosY;
+    private  void setCenterOfMassPosY(double centerOfMassPosY) {
+
+        shape.setCenterY((float) centerOfMassPosY);
     }
 
-    double deltaVelocity, radians, acceleration;
-    private double force;
+    double deltaVelocity, radians, acceleration, force;
 
-    /**
-     * Default constructor
-     */
-    Mass() {
+    Mass(Shape shape, double mass) {
 
+        this.shape = shape;
+        _mass = mass;
     }
 
     /**
@@ -53,9 +54,7 @@ public class Mass extends Node {
      */
     Mass(double posX, double posY, double mass) {
 
-        this._mass = mass;
-        this._posX = posX;
-        this._posY = posY;
+        this(new Point((float) posX, (float) posY), mass);
     }
 
     public void calculateForce(Attractable body, double timePassed) {
@@ -71,7 +70,7 @@ public class Mass extends Node {
             // relatively to each other PLUS the actual vector of the current particle.
 
             // This is the acceleration which acts on this particle = m/s2
-            acceleration =  force / _mass;
+            acceleration = force / _mass;
 
             double x1, x2, y1, y2;
             x1 = getCenterOfMassPosX();
@@ -89,8 +88,13 @@ public class Mass extends Node {
 
     public void merge(Attractable body) {
         double newMass = body.getMass();
-        this._posX = ((this._posX * this._mass) + (body.getCenterOfMassPosX() * newMass)) / (this._mass + newMass);
-        this._posY = ((this._posY * this._mass) + (body.getCenterOfMassPosY() * newMass)) / (this._mass + newMass);
+
+        setCenterOfMassPosX(
+                ((getCenterOfMassPosX() * this._mass) + (body.getCenterOfMassPosX() * newMass)) / (this._mass + newMass)
+        );
+        setCenterOfMassPosY(
+                ((getCenterOfMassPosY() * this._mass) + (body.getCenterOfMassPosY() * newMass)) / (this._mass + newMass)
+        );
         this._mass += newMass;
     }
 
@@ -103,22 +107,18 @@ public class Mass extends Node {
 
         int length = 5;
 
-        Color orig = g.getColor();
-
         g.setColor(getColor());
         g.fillArc((int) (this.getCenterOfMassPosX() - (length / 2)), (int) (this.getCenterOfMassPosY() - (length / 2)), length, length, 0, 360);
-
-        g.setColor(orig);
     }
 
-    protected void updatePosX(SpaceTime spaceTime, double offset) {
+    void updatePosX(SpaceTime spaceTime, double offset) {
 
-        _posX = spaceTime.determinePosX(this, offset);
+        setCenterOfMassPosX(spaceTime.determinePosX(this, offset));
     }
 
-    protected void updatePosY(SpaceTime spaceTime, double offset) {
+    void updatePosY(SpaceTime spaceTime, double offset) {
 
-        _posY = spaceTime.determinePosY(this, offset);
+        setCenterOfMassPosY(spaceTime.determinePosY(this, offset));
     }
 
     void applyPhysics(SpaceTime spaceTime) {

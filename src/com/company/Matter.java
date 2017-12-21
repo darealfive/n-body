@@ -2,9 +2,14 @@ package com.company;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Shape;
 
 public class Matter extends Mass implements Acceleratable {
-    protected double velocityX, velocityY, deltaVelocityX, deltaVelocityY;
+
+    private final static short DEFAULT_WIDTH = 5;
+
+    double velocityX, velocityY, deltaVelocityX, deltaVelocityY;
 
     protected Color getColor() {
         return new Color(100, 150, 200);
@@ -33,11 +38,24 @@ public class Matter extends Mass implements Acceleratable {
      */
     Matter(double velocityX, double velocityY, double posX, double posY, double mass) {
 
+        this(velocityX, velocityY, posX, posY, DEFAULT_WIDTH, mass);
+    }
+
+    /**
+     * @param posX
+     * @param posY
+     * @param mass
+     */
+    Matter(double velocityX, double velocityY, double posX, double posY, double width, double mass) {
+
+        this(new Circle((float) posX, (float) posY, (float) width), velocityX, velocityY, mass);
+    }
+
+    Matter(Shape shape, double velocityX, double velocityY, double mass) {
+
+        super(shape, mass);
         this.velocityX = velocityX;
         this.velocityY = velocityY;
-        setCenterOfMassPosX(posX);
-        setCenterOfMassPosY(posY);
-        this._mass = mass;
     }
 
     void applyPhysics(SpaceTime spaceTime) {
@@ -74,13 +92,7 @@ public class Matter extends Mass implements Acceleratable {
 
     public void show(Graphics g) {
 
-        int length = 10;
-
-        Color orig = g.getColor();
-
         g.setColor(getColor());
-        g.drawArc((int) (getCenterOfMassPosX() - (length / 2)), (int) (getCenterOfMassPosY() - (length / 2)), length, length, 0, 360);
-
-        g.setColor(orig);
+        g.draw(shape);
     }
 }

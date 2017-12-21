@@ -2,6 +2,9 @@ package com.company;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.ShapeFill;
+import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Vector2f;
 
 public class DebugMatter extends Matter {
 
@@ -10,6 +13,16 @@ public class DebugMatter extends Matter {
     static double maxVelocityX = 0, maxVelocityY = 0;
 
     private double lastVelocityX, lastVelocityY, absLastVelocityX, absLastVelocityY;
+
+    /**
+     * @param posX
+     * @param posY
+     * @param mass
+     */
+    DebugMatter(double velocityX, double velocityY, double posX, double posY, double mass) {
+
+        super(velocityX, velocityY, posX, posY, mass);
+    }
 
     private double getPositionWithVelocityX() {
         return getCenterOfMassPosX() + velocityX * velocityAmplification;
@@ -29,24 +42,6 @@ public class DebugMatter extends Matter {
 
     protected Color getColor() {
         return new Color(200, 150, 10);
-    }
-
-    public DebugMatter(double posX, double posY, double mass) {
-        this(0, 0, posX, posY, mass);
-    }
-
-    /**
-     * Note: position must be relative (room). Can I fix this?
-     *
-     * @param velocityX velocity vector for X direction
-     * @param velocityY velocity vector for Y direction
-     * @param posX
-     * @param posY
-     * @param mass
-     */
-    DebugMatter(double velocityX, double velocityY, double posX, double posY, double mass) {
-
-        super(velocityX, velocityY, posX, posY, mass);
     }
 
     void applyPhysics(SpaceTime spaceTime) {
