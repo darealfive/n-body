@@ -10,6 +10,8 @@ public class TreeNode extends Node {
 
     private Rectangle shape;
 
+    private final int length;
+
     private boolean fill = false;
     private Color frameColor = new Color(255, 255, 255);
 
@@ -23,13 +25,10 @@ public class TreeNode extends Node {
 
     private Vector<NodeInterface> nodes = new Vector<>(1);
 
-    private int getLength() {
-        return (int) shape.getWidth();
-    }
-
     TreeNode(int length, int startX, int startY) {
 
         shape = new Rectangle(startX, startY, length, length);
+        this.length = (int) shape.getWidth();
     }
 
     public double getCenterOfMassPosX() {
@@ -117,7 +116,7 @@ public class TreeNode extends Node {
      */
     private double getMAC(Attractable body) {
 
-        return getLength() / getDistanceTo(body);
+        return length / getDistanceTo(body);
     }
 
     void add(NodeInterface body) {
@@ -156,7 +155,7 @@ public class TreeNode extends Node {
     private TreeNode getQuadrant(Locatable body) {
 
         TreeNode node;
-        if (this.shape.getWidth() == 1) {
+        if (length == 1) {
 
             node = null;
             if (nw == null) {
@@ -176,7 +175,7 @@ public class TreeNode extends Node {
 
         int posX = (int) shape.getX();
         int posY = (int) shape.getY();
-        int quadrantSideLength = (getLength() / 2);
+        int quadrantSideLength = (length / 2);
         int posXendOfWest = posX + quadrantSideLength;
         int posYendOfNorth = posY + quadrantSideLength;
         //Is it in a north quadrant?
