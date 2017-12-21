@@ -9,17 +9,12 @@ class BarnesHutTree {
         this.space = space;
     }
 
-    TreeNode build(double delta) {
+    TreeNode build() {
 
         TreeNode rootTreeNode = new TreeNode(this.space.getWidth(), 0, 0);
         for (NodeInterface body : space.getBodies()) {
 
             rootTreeNode.add(body);
-        }
-
-        for (Attractable body : space.getBodies()) {
-
-            rootTreeNode.calculateForce(body, delta);
         }
 
         return rootTreeNode;
