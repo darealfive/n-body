@@ -2,10 +2,13 @@ package com.company;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Rectangle;
 
 import java.util.*;
 
 public class TreeNode extends Node {
+
+    private Rectangle shape;
 
     private boolean fill = false;
     private Color frameColor = new Color(255, 255, 255);
@@ -14,21 +17,19 @@ public class TreeNode extends Node {
 
     private int _bodyCounter = 0;
 
-    private int _length;
-    private int _startX;
-    private int _startY;
-
     private TreeNode nw, ne, sw, se;
 
     private NodeInterface _body;
 
     private Vector<NodeInterface> nodes = new Vector<>(1);
 
+    private int getLength() {
+        return (int) shape.getWidth();
+    }
+
     TreeNode(int length, int startX, int startY) {
 
-        this._length = length;
-        this._startX = startX;
-        this._startY = startY;
+        shape = new Rectangle(startX, startY, length, length);
     }
 
     public double getCenterOfMassPosX() {
@@ -63,11 +64,11 @@ public class TreeNode extends Node {
 
             Color c = new Color(255, 255, 255, 100);
             g.setColor(c);
-            g.fillRect(this._startX, this._startY, this._length, this._length);
+            g.fill(shape);
             g.setColor(frameColor);
         } else {
 
-            g.drawRect(this._startX, this._startY, this._length, this._length);
+            g.draw(shape);
         }
 
         // Draw pseudo body slightly different
@@ -116,7 +117,7 @@ public class TreeNode extends Node {
      */
     private double getMAC(Attractable body) {
 
-        return this._length / getDistanceTo(body);
+        return getLength() / getDistanceTo(body);
     }
 
     void add(NodeInterface body) {
@@ -155,7 +156,7 @@ public class TreeNode extends Node {
     private TreeNode getQuadrant(Locatable body) {
 
         TreeNode node;
-        if (this._length == 1) {
+        if (this.shape.getWidth() == 1) {
 
             node = null;
             if (nw == null) {
@@ -173,18 +174,17 @@ public class TreeNode extends Node {
             return node;
         }
 
-        int posX, posY;
-        int quadrantSideLength = (this._length / 2);
-        int posXendOfWest = this._startX + quadrantSideLength;
-        int posYendOfNorth = this._startY + quadrantSideLength;
+        int posX = (int) shape.getX();
+        int posY = (int) shape.getY();
+        int quadrantSideLength = (getLength() / 2);
+        int posXendOfWest = posX + quadrantSideLength;
+        int posYendOfNorth = posY + quadrantSideLength;
         //Is it in a north quadrant?
         if (body.getCenterOfMassPosY() < posYendOfNorth) {
 
-            posY = this._startY;
             //Is it in a west quadrant?
             if (body.getCenterOfMassPosX() < posXendOfWest) {
 
-                posX = this._startX;
                 if (this.nw == null) {
                     this.nw = new TreeNode(quadrantSideLength, posX, posY);
                     this.nodes.add(this.nw);
@@ -204,7 +204,6 @@ public class TreeNode extends Node {
             posY = posYendOfNorth;
             if (body.getCenterOfMassPosX() < posXendOfWest) {
 
-                posX = this._startX;
                 if (this.sw == null) {
                     this.sw = new TreeNode(quadrantSideLength, posX, posY);
                     this.nodes.add(this.sw);
