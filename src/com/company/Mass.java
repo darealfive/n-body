@@ -16,9 +16,7 @@ public class Mass extends Node {
 
     private static final double G = 6.674 * Math.pow(10, -11);
 
-    double _mass;
-
-    Shape shape;
+    private double _mass;
 
     public double getCenterOfMassPosX() {
         return shape.getCenterX();
@@ -41,8 +39,8 @@ public class Mass extends Node {
 
     Mass(Shape shape, double mass) {
 
-        this.shape = shape;
-        _mass = mass;
+        super(shape);
+        this._mass = mass;
     }
 
     /**

@@ -8,8 +8,6 @@ import java.util.*;
 
 public class TreeNode extends Node {
 
-    private Rectangle shape;
-
     private final int length;
 
     private boolean fill = false;
@@ -27,7 +25,7 @@ public class TreeNode extends Node {
 
     TreeNode(int length, int startX, int startY) {
 
-        shape = new Rectangle(startX, startY, length, length);
+        super(new Square(startX, startY, length));
         this.length = (int) shape.getWidth();
     }
 
@@ -52,7 +50,6 @@ public class TreeNode extends Node {
 
     public void show(Graphics g) {
 
-        Color originalColor = g.getColor();
         for (Showable body : this.nodes) {
 
             body.show(g);
@@ -61,22 +58,23 @@ public class TreeNode extends Node {
         g.setColor(frameColor);
         if (fill) {
 
-            Color c = new Color(255, 255, 255, 100);
-            g.setColor(c);
+            g.setColor(new Color(255, 255, 255, 100));
             g.fill(shape);
-            g.setColor(frameColor);
         } else {
 
             g.draw(shape);
         }
 
-        // Draw pseudo body slightly different
+        if (contentExceedsBoundaries) {
+
+            g.setColor(new Color(255, 0, 0, 100));
+            g.fill(shape);
+        }
+
         if (this._bodyCounter > 1) {
 
             this._body.show(g);
         }
-
-        g.setColor(originalColor);
     }
 
     public void calculateForce(Attractable body, double timePassed) {
@@ -119,13 +117,24 @@ public class TreeNode extends Node {
         return length / getDistanceTo(body);
     }
 
+    private boolean contentExceedsBoundaries = false;
+
+    private void addInternal(NodeInterface body) {
+
+        if (!shape.contains(body.getShape())) {
+
+            contentExceedsBoundaries = true;
+        }
+        this.nodes.add(body);
+    }
+
     void add(NodeInterface body) {
 
         if (this._bodyCounter == 0) {
 
-            this.nodes.add(body);
+            addInternal(body);
         } else {
-
+            contentExceedsBoundaries = false;
             TreeNode subQuadrant;
             if (this._bodyCounter == 1) {
 
