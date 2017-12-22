@@ -2,7 +2,6 @@ package com.company;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Rectangle;
 
 import java.util.*;
 
@@ -141,17 +140,17 @@ public class TreeNode extends Node {
                 // Now the old body becomes a pseudo body (can get aggregated data)
                 this.nodes.removeElement(this._body);
 
-                // "Clone" the properties of the old body to be able to safely put it deeper into the recursion tree.
-                // This way we can keep it virtually here and modify its properties without effecting the body deeper
-                // in the tree.
-                NodeInterface oldBody = new Mass(this._body.getCenterOfMassPosX(), this._body.getCenterOfMassPosY(), this._body.getMass());
                 subQuadrant = this.getQuadrant(this._body);
 
                 // The next smallest quadrant will also have a length of 1 which means the recursion wont terminate
                 // so we have to set the body into the next free quadrant OR if there is no free quadrant left, pick the
                 // last non-free quadrant and put the particle there and try again.
                 subQuadrant.add(this._body);
-                this._body = oldBody;
+
+                // "Clone" the properties of the old body to be able to safely put it deeper into the recursion tree.
+                // This way we can keep it virtually here and modify its properties without effecting the body deeper
+                // in the tree.
+                this._body = new Mass(this._body.getCenterOfMassPosX(), this._body.getCenterOfMassPosY(), this._body.getMass());
             }
 
             subQuadrant = this.getQuadrant(body);
