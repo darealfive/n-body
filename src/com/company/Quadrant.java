@@ -101,7 +101,7 @@ public class Quadrant extends Node {
         */
 
 
-        if (contentExceedsBoundaries) {
+        if (doesContentExceedsBoundaries()) {
 
             g.setColor(new Color(255, 0, 0, 100));
             g.fill(shape);
@@ -163,13 +163,15 @@ public class Quadrant extends Node {
         return length / getDistanceTo(body);
     }
 
-    private boolean contentExceedsBoundaries = false;
-
+    /**
+     * Adds the matter to this quadrant and additionally checks if the matter does exceeds the boundaries
+     *
+     * @param body
+     */
     private void addInternal(NodeInterface body) {
 
         if (!shape.contains(body.getShape())) {
 
-            contentExceedsBoundaries = true;
             exceededBoundaries.add(this);
         }
         this.nodes.add(body);
@@ -182,10 +184,9 @@ public class Quadrant extends Node {
             addInternal(body);
         } else {
 
-            if (contentExceedsBoundaries) {
+            if (doesContentExceedsBoundaries()) {
 
                 exceededBoundaries.remove(this);
-                contentExceedsBoundaries = false;
             }
 
             Quadrant subQuadrant;
@@ -288,6 +289,15 @@ public class Quadrant extends Node {
         }
 
         return node;
+    }
+
+    /**
+     * Checks if its matter exceeds the boundaries of this Quadrant
+     *
+     * @return
+     */
+    private boolean doesContentExceedsBoundaries() {
+        return exceededBoundaries.contains(this);
     }
 
     /**
