@@ -20,14 +20,16 @@ public class TreeNode extends Node {
 
     private Vector<NodeInterface> nodes = new Vector<>(1);
 
-    private Quadrant orientation = null;
 
-    private HashMap<Quadrant, TreeNode> quadrants = new HashMap<>(1);
 
-    TreeNode(TreeNode parentNode, Quadrant quadrant, int length, int startX, int startY) {
+    private CardinalPoint location = null;
+
+    private HashMap<CardinalPoint, TreeNode> locations = new HashMap<>(1);
+
+    TreeNode(TreeNode parentNode, CardinalPoint location, int length, int startX, int startY) {
 
         this(parentNode, length, startX, startY);
-        orientation = quadrant;
+        this.location = location;
     }
 
     TreeNode(int length, int startX, int startY) {
@@ -178,20 +180,20 @@ public class TreeNode extends Node {
     private TreeNode getQuadrant(Locatable body) {
 
         TreeNode node = null;
-        Quadrant quadrant = null;
+        CardinalPoint location = null;
 
         if (length == 1) {
 
             // Finds the first non existing quadrant in the map in order they are listed in enum class or returns the north west quadrant.
-            quadrant = Arrays.stream(Quadrant.values())
-                    .filter(q -> !quadrants.containsKey(q))
+            location = Arrays.stream(CardinalPoint.values())
+                    .filter(q -> !locations.containsKey(q))
                     .findFirst()
-                    .orElse(Quadrant.SE);
+                    .orElse(CardinalPoint.SE);
 
             // Regardless whether the quadrant exists or not, we want the first empty quadrant to be our new tree node. In most cases this would be the NW quadrant node.
-            node = quadrants.putIfAbsent(
-                    quadrant,
-                    new TreeNode(this, quadrant, 1, 1, 1)
+            node = locations.putIfAbsent(
+                    location,
+                    new TreeNode(this, location, 1, 1, 1)
             );
 
         } else {
@@ -227,11 +229,11 @@ public class TreeNode extends Node {
 
             try {
 
-                quadrant = Quadrant.getQuadrant(horizontal, vertical);
+                location = CardinalPoint.getCardinalPoint(horizontal, vertical);
 
-                node = quadrants.putIfAbsent(
-                        quadrant,
-                        new TreeNode(this, quadrant, quadrantSideLength, startPosX, startPosY)
+                node = locations.putIfAbsent(
+                        location,
+                        new TreeNode(this, location, quadrantSideLength, startPosX, startPosY)
                 );
 
             } catch (Exception e) {
@@ -244,7 +246,7 @@ public class TreeNode extends Node {
         // be stored in the node list of this node.
         if (node == null) {
 
-            node = quadrants.get(quadrant);
+            node = locations.get(location);
             nodes.add(node);
         }
 

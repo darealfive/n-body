@@ -3,7 +3,7 @@ package com.company;
 /**
  * Aggregates the two locations components "Horizontal" and "Vertical" to the 4 cardinal points
  */
-public enum Quadrant {
+public enum CardinalPoint {
 
     NE(Horizontal.NORTH, Vertical.EAST),
     NW(Horizontal.NORTH, Vertical.WEST),
@@ -13,7 +13,7 @@ public enum Quadrant {
     private final Horizontal horizontal;
     private final Vertical vertical;
 
-    Quadrant(Horizontal horizontal, Vertical vertical) {
+    CardinalPoint(Horizontal horizontal, Vertical vertical) {
         this.horizontal = horizontal;
         this.vertical = vertical;
     }
@@ -26,17 +26,17 @@ public enum Quadrant {
      * @return
      * @throws Exception
      */
-    public static Quadrant getQuadrant(Horizontal horizontal, Vertical vertical) throws Exception {
+    public static CardinalPoint getCardinalPoint(Horizontal horizontal, Vertical vertical) throws Exception {
 
-        for (Quadrant quadrant : Quadrant.values()) {
+        for (CardinalPoint location : CardinalPoint.values()) {
 
-            if (quadrant.horizontal == horizontal && quadrant.vertical == vertical) {
+            if (location.horizontal == horizontal && location.vertical == vertical) {
 
-                return quadrant;
+                return location;
             }
         }
 
-        throw new Exception("There is no such Quadrant available");
+        throw new Exception("There is no such CardinalPoint available");
     }
 
     /**
