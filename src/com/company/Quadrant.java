@@ -10,6 +10,7 @@ public class Quadrant extends Node {
     private final int length;
 
     private boolean fill = false;
+
     private Color frameColor = new Color(255, 255, 255);
 
     private static final short MAC_TRESHOLD = 1;
@@ -28,19 +29,19 @@ public class Quadrant extends Node {
 
     private HashMap<CardinalPoint, Quadrant> locations = new HashMap<>(1);
 
-    Quadrant(Quadrant parentNode, CardinalPoint location, int length, int startX, int startY) {
-
-        this(parentNode, length, startX, startY);
-        this.location = location;
-    }
-
     Quadrant(int length, int startX, int startY) {
 
         super(new Square(startX, startY, length));
         this.length = (int) shape.getWidth();
     }
 
-    Quadrant(Quadrant parentNode, int length, int startX, int startY) {
+    private Quadrant(Quadrant parentNode, CardinalPoint location, int length, int startX, int startY) {
+
+        this(parentNode, length, startX, startY);
+        this.location = location;
+    }
+
+    private Quadrant(Quadrant parentNode, int length, int startX, int startY) {
 
         super(new Square(startX, startY, length));
         this.parentNode = parentNode;
