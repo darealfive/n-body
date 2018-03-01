@@ -70,7 +70,7 @@ public class SpaceTime {
         BarnesHutTree tree = new BarnesHutTree(this);
         this._rootNode = tree.build();
 
-        for (Mass body : bodies) {
+        for (Attractable body : bodies) {
 
             this._rootNode.calculateForce(body, delta);
         }

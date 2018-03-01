@@ -17,7 +17,7 @@ public class Quadrant extends Node {
 
     private int _bodyCounter = 0;
 
-    private NodeInterface _body;
+    private Mass _body;
 
     private Vector<NodeInterface> nodes = new Vector<>(1);
 
@@ -177,7 +177,16 @@ public class Quadrant extends Node {
         this.nodes.add(body);
     }
 
-    void add(NodeInterface body) {
+    /**
+     * Add a mass to this and increases the body counter.
+     * If this does not contains any body, the mass object will be simply added.
+     * If there is at least one body, the body will be removed adn inserted recursively in the quadrant tree till every
+     * body is alone in its quadrant. Then the the given mass will be added and the process of recursive insertion will
+     * be repeated.
+     *
+     * @param body
+     */
+    void add(Mass body) {
 
         if (this._bodyCounter == 0) {
 
@@ -305,7 +314,7 @@ public class Quadrant extends Node {
      *
      * @param body the NodeInterface to be added to this
      */
-    private void _updateCenterOfMass(NodeInterface body) {
+    private void _updateCenterOfMass(Mass body) {
 
         if (_body == null) {
             _body = body;
