@@ -9,14 +9,14 @@ class BarnesHutTree {
         this.space = space;
     }
 
-    TreeNode build() {
+    Quadrant build() {
 
-        TreeNode rootTreeNode = new TreeNode(this.space.getWidth(), 0, 0);
+        Quadrant rootQuadrant = new Quadrant(this.space.getWidth(), 0, 0);
         for (NodeInterface body : space.getBodies()) {
 
-            rootTreeNode.add(body);
+            rootQuadrant.add(body);
         }
 
-        return rootTreeNode;
+        return rootQuadrant;
     }
 }

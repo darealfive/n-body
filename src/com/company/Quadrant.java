@@ -5,7 +5,7 @@ import org.newdawn.slick.Graphics;
 
 import java.util.*;
 
-public class TreeNode extends Node {
+public class Quadrant extends Node {
 
     private final int length;
 
@@ -20,25 +20,27 @@ public class TreeNode extends Node {
 
     private Vector<NodeInterface> nodes = new Vector<>(1);
 
+    private static Vector<TreeNode> exceededBoundaries = new Vector<>();
 
+    private Quadrant parentNode = null;
 
     private CardinalPoint location = null;
 
-    private HashMap<CardinalPoint, TreeNode> locations = new HashMap<>(1);
+    private HashMap<CardinalPoint, Quadrant> locations = new HashMap<>(1);
 
-    TreeNode(TreeNode parentNode, CardinalPoint location, int length, int startX, int startY) {
+    Quadrant(Quadrant parentNode, CardinalPoint location, int length, int startX, int startY) {
 
         this(parentNode, length, startX, startY);
         this.location = location;
     }
 
-    TreeNode(int length, int startX, int startY) {
+    Quadrant(int length, int startX, int startY) {
 
         super(new Square(startX, startY, length));
         this.length = (int) shape.getWidth();
     }
 
-    TreeNode(TreeNode parentNode, int length, int startX, int startY) {
+    Quadrant(Quadrant parentNode, int length, int startX, int startY) {
 
         super(new Square(startX, startY, length));
         this.parentNode = parentNode;
@@ -81,6 +83,23 @@ public class TreeNode extends Node {
             g.draw(shape);
         }
 
+        /*if (_bodyCounter == 1 && location != null) {
+
+            g.drawString(location.name(), shape.getX(), shape.getY());
+        }*/
+        /*
+        Quadrant node;
+        for (Map.Entry<CardinalPoint, Quadrant> entry : this.locations.entrySet()) {
+
+            node = entry.getValue();
+            if (node._bodyCounter == 1) {
+
+                node.showOrientation(g, entry.getKey());
+            }
+        }
+        */
+
+
         if (contentExceedsBoundaries) {
 
             g.setColor(new Color(255, 0, 0, 100));
@@ -91,6 +110,16 @@ public class TreeNode extends Node {
 
             this._body.show(g);
         }
+    }
+
+    /**
+     * Draws the given location at its topper left of this node
+     *
+     * @param g
+     */
+    void showOrientation(Graphics g, CardinalPoint orientation) {
+
+        g.drawString(orientation.name(), shape.getX(), shape.getY());
     }
 
     public void calculateForce(Attractable body, double timePassed) {
@@ -140,6 +169,7 @@ public class TreeNode extends Node {
         if (!shape.contains(body.getShape())) {
 
             contentExceedsBoundaries = true;
+            exceededBoundaries.add(this);
         }
         this.nodes.add(body);
     }
@@ -150,8 +180,14 @@ public class TreeNode extends Node {
 
             addInternal(body);
         } else {
-            contentExceedsBoundaries = false;
-            TreeNode subQuadrant;
+
+            if (contentExceedsBoundaries) {
+
+                exceededBoundaries.remove(this);
+                contentExceedsBoundaries = false;
+            }
+
+            Quadrant subQuadrant;
             if (this._bodyCounter == 1) {
 
                 // Now the old body becomes a pseudo body (can get aggregated data)
@@ -177,9 +213,9 @@ public class TreeNode extends Node {
         this._updateCenterOfMass(body);
     }
 
-    private TreeNode getQuadrant(Locatable body) {
+    private Quadrant getQuadrant(Locatable body) {
 
-        TreeNode node = null;
+        Quadrant node = null;
         CardinalPoint location = null;
 
         if (length == 1) {
@@ -193,7 +229,7 @@ public class TreeNode extends Node {
             // Regardless whether the quadrant exists or not, we want the first empty quadrant to be our new tree node. In most cases this would be the NW quadrant node.
             node = locations.putIfAbsent(
                     location,
-                    new TreeNode(this, location, 1, 1, 1)
+                    new Quadrant(this, location, 1, 1, 1)
             );
 
         } else {
@@ -233,7 +269,7 @@ public class TreeNode extends Node {
 
                 node = locations.putIfAbsent(
                         location,
-                        new TreeNode(this, location, quadrantSideLength, startPosX, startPosY)
+                        new Quadrant(this, location, quadrantSideLength, startPosX, startPosY)
                 );
 
             } catch (Exception e) {

@@ -18,7 +18,7 @@ public class SpaceTime {
 
     private int width, height;
 
-    private TreeNode _rootNode;
+    private Quadrant _rootNode;
 
     private Vector<Mass> bodies = new Vector<>();
 
