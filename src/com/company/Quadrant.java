@@ -43,9 +43,8 @@ public class Quadrant extends Node {
 
     private Quadrant(Quadrant parentNode, int length, int startX, int startY) {
 
-        super(new Square(startX, startY, length));
+        this(length, startX, startY);
         this.parentNode = parentNode;
-        this.length = (int) shape.getWidth();
     }
 
     public double getCenterOfMassPosX() {
