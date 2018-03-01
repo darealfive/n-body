@@ -21,7 +21,7 @@ public class Quadrant extends Node {
 
     private Vector<NodeInterface> nodes = new Vector<>(1);
 
-    private static Vector<TreeNode> exceededBoundaries = new Vector<>();
+    private static Vector<Quadrant> exceededBoundaries = new Vector<>();
 
     private Quadrant parentNode = null;
 
