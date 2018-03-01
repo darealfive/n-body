@@ -16,15 +16,30 @@ public class TreeNode extends Node {
 
     private int _bodyCounter = 0;
 
-    private TreeNode nw, ne, sw, se;
-
     private NodeInterface _body;
 
     private Vector<NodeInterface> nodes = new Vector<>(1);
 
+    private Quadrant orientation = null;
+
+    private HashMap<Quadrant, TreeNode> quadrants = new HashMap<>(1);
+
+    TreeNode(TreeNode parentNode, Quadrant quadrant, int length, int startX, int startY) {
+
+        this(parentNode, length, startX, startY);
+        orientation = quadrant;
+    }
+
     TreeNode(int length, int startX, int startY) {
 
         super(new Square(startX, startY, length));
+        this.length = (int) shape.getWidth();
+    }
+
+    TreeNode(TreeNode parentNode, int length, int startX, int startY) {
+
+        super(new Square(startX, startY, length));
+        this.parentNode = parentNode;
         this.length = (int) shape.getWidth();
     }
 
@@ -162,69 +177,75 @@ public class TreeNode extends Node {
 
     private TreeNode getQuadrant(Locatable body) {
 
-        TreeNode node;
+        TreeNode node = null;
+        Quadrant quadrant = null;
+
         if (length == 1) {
 
-            node = null;
-            if (nw == null) {
-                node = nw = new TreeNode(1, 1, 1);
-            } else if (ne == null) {
-                node = ne = new TreeNode(1, 1, 1);
-            } else if (sw == null) {
-                node = sw = new TreeNode(1, 1, 1);
-            } else if (se == null) {
-                node = se = new TreeNode(1, 1, 1);
+            // Finds the first non existing quadrant in the map in order they are listed in enum class or returns the north west quadrant.
+            quadrant = Arrays.stream(Quadrant.values())
+                    .filter(q -> !quadrants.containsKey(q))
+                    .findFirst()
+                    .orElse(Quadrant.SE);
+
+            // Regardless whether the quadrant exists or not, we want the first empty quadrant to be our new tree node. In most cases this would be the NW quadrant node.
+            node = quadrants.putIfAbsent(
+                    quadrant,
+                    new TreeNode(this, quadrant, 1, 1, 1)
+            );
+
+        } else {
+
+            int startPosX = (int) shape.getX();
+            int startPosY = (int) shape.getY();
+            int quadrantSideLength = (length / 2);
+            int posXendOfWest = startPosX + quadrantSideLength;
+            int posYendOfNorth = startPosY + quadrantSideLength;
+
+            Horizontal horizontal;
+            Vertical vertical;
+
+            //Is it in a north quadrant?
+            if (body.getCenterOfMassPosY() < posYendOfNorth) {
+
+                horizontal = Horizontal.NORTH;
+            } else {
+
+                horizontal = Horizontal.SOUTH;
+                startPosY = posYendOfNorth;
             }
-
-            node = (node == null) ? nw : node;
-            nodes.add(node);
-            return node;
-        }
-
-        int posX = (int) shape.getX();
-        int posY = (int) shape.getY();
-        int quadrantSideLength = (length / 2);
-        int posXendOfWest = posX + quadrantSideLength;
-        int posYendOfNorth = posY + quadrantSideLength;
-        //Is it in a north quadrant?
-        if (body.getCenterOfMassPosY() < posYendOfNorth) {
 
             //Is it in a west quadrant?
             if (body.getCenterOfMassPosX() < posXendOfWest) {
 
-                if (this.nw == null) {
-                    this.nw = new TreeNode(quadrantSideLength, posX, posY);
-                    this.nodes.add(this.nw);
-                }
-                node = this.nw;
+                vertical = Vertical.WEST;
             } else {
 
-                posX = posXendOfWest;
-                if (this.ne == null) {
-                    this.ne = new TreeNode(quadrantSideLength, posX, posY);
-                    this.nodes.add(this.ne);
-                }
-                node = this.ne;
+                vertical = Vertical.EAST;
+                startPosX = posXendOfWest;
             }
-        } else {
 
-            posY = posYendOfNorth;
-            if (body.getCenterOfMassPosX() < posXendOfWest) {
+            try {
 
-                if (this.sw == null) {
-                    this.sw = new TreeNode(quadrantSideLength, posX, posY);
-                    this.nodes.add(this.sw);
-                }
-                node = this.sw;
-            } else {
+                quadrant = Quadrant.getQuadrant(horizontal, vertical);
 
-                posX = posXendOfWest;
-                if (this.se == null) {
-                    this.se = new TreeNode(quadrantSideLength, posX, posY);
-                    this.nodes.add(this.se);
-                }
-                node = this.se;
+                node = quadrants.putIfAbsent(
+                        quadrant,
+                        new TreeNode(this, quadrant, quadrantSideLength, startPosX, startPosY)
+                );
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
             }
+        }
+
+        // Is null if element was not there before putIfAbsent => no body in it. This also means it is new and needs to
+        // be stored in the node list of this node.
+        if (node == null) {
+
+            node = quadrants.get(quadrant);
+            nodes.add(node);
         }
 
         return node;
