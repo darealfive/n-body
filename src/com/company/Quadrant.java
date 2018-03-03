@@ -2,6 +2,7 @@ package com.company;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import com.company.CardinalPoint.*;
 
 import java.util.*;
 
@@ -21,13 +22,13 @@ public class Quadrant extends Node {
 
     private Vector<NodeInterface> nodes = new Vector<>(1);
 
-    private static Vector<Quadrant> exceededBoundaries = new Vector<>();
+    static HashMap<Quadrant, HashMap<CardinalPoint, Float>> violatedQuadrantCardinalPoints = new HashMap<>(1);
 
     private Quadrant parentNode = null;
 
-    private CardinalPoint location = null;
+    private BisectorCardinalPoint location = null;
 
-    private HashMap<CardinalPoint, Quadrant> locations = new HashMap<>(1);
+    private HashMap<BisectorCardinalPoint, Quadrant> locations = new HashMap<>(1);
 
     Quadrant(int length, int startX, int startY) {
 
@@ -35,7 +36,7 @@ public class Quadrant extends Node {
         this.length = (int) shape.getWidth();
     }
 
-    private Quadrant(Quadrant parentNode, CardinalPoint location, int length, int startX, int startY) {
+    private Quadrant(Quadrant parentNode, BisectorCardinalPoint location, int length, int startX, int startY) {
 
         this(parentNode, length, startX, startY);
         this.location = location;
@@ -89,7 +90,7 @@ public class Quadrant extends Node {
         }*/
         /*
         Quadrant node;
-        for (Map.Entry<CardinalPoint, Quadrant> entry : this.locations.entrySet()) {
+        for (Map.Entry<BisectorCardinalPoint, Quadrant> entry : this.locations.entrySet()) {
 
             node = entry.getValue();
             if (node._bodyCounter == 1) {
@@ -117,7 +118,7 @@ public class Quadrant extends Node {
      *
      * @param g
      */
-    void showOrientation(Graphics g, CardinalPoint orientation) {
+    void showOrientation(Graphics g, BisectorCardinalPoint orientation) {
 
         g.drawString(orientation.name(), shape.getX(), shape.getY());
     }
@@ -151,6 +152,59 @@ public class Quadrant extends Node {
         }
     }
 
+    private void resolveBisectorCardinalCollision(BisectorCardinalPoint origLocation, Mass body, BisectorCardinalPoint bisectorCardinalPoint, float offsetX, float offsetY) {
+        float a = 0;
+    }
+
+    private void resolveCardinalCollision(BisectorCardinalPoint bisectorCardinalPointMass, Mass body, CardinalPoint cardinalPointOffset, float offset) {
+
+        /*if (bisectorCardinalPointMass.contains(cardinalPointOffset)) {
+
+        }*/
+    }
+
+    void collisionDetection() {
+
+        if (_bodyCounter > 1) {
+            throw new RuntimeException("Counted more than one body");
+        }
+
+        float offset;
+        HashMap<Horizontal, Float> horizontals = new HashMap<>(1);
+        HashMap<Vertical, Float> verticals = new HashMap<>(1);
+        for (Map.Entry<CardinalPoint, Float> entrySet : violatedQuadrantCardinalPoints.get(this).entrySet()) {
+
+            CardinalPoint violatedBoundary = entrySet.getKey();
+            offset = entrySet.getValue();
+            //Resolve collisions in the exceeded boundaries.
+            //Additionally build all possible bisector cardinal points out of all violated cardinal points to iterate later trough
+            if (violatedBoundary.isHorizontal()) {
+
+                horizontals.put(violatedBoundary.getHorizontal(), offset);
+            } else {
+
+                verticals.put(violatedBoundary.getVertical(), offset);
+            }
+
+            parentNode.resolveCardinalCollision(location, _body, violatedBoundary, offset);
+        }
+
+        //TODO Wenn bspw. im Norden und Westen die Grenzen überschritten werden, heißt das nicht unbedingt, dass auch die Nordwestliche Ecke überschriten wurde.
+        //Try all cardinal points and resolve collisions in the edges
+        for (Map.Entry<Horizontal, Float> horizontal : horizontals.entrySet()) {
+            for (Map.Entry<Vertical, Float> vertical : verticals.entrySet()) {
+
+                BisectorCardinalPoint bisectorCardinalPoint = BisectorCardinalPoint.getBisectorCardinalPoint(
+                        horizontal.getKey(),
+                        vertical.getKey()
+                );
+
+                parentNode.resolveBisectorCardinalCollision(location, _body, bisectorCardinalPoint, vertical.getValue(), horizontal.getValue());
+            }
+        }
+    }
+
+
     /**
      * Gets the actual MAC (Multipole-Acceptance-Criterion) to a given body
      *
@@ -163,16 +217,36 @@ public class Quadrant extends Node {
     }
 
     /**
-     * Adds the matter to this quadrant and additionally checks if the matter does exceeds the boundaries
+     * Adds the mass to this quadrant and additionally checks if the matter does exceeds the boundaries
      *
      * @param body
      */
-    private void addInternal(NodeInterface body) {
+    private void addInternal(Mass body) {
 
-        if (!shape.contains(body.getShape())) {
-
-            exceededBoundaries.add(this);
+        HashMap<CardinalPoint, Float> cardinalPointOffset = new HashMap<>(1);
+        float offset;
+        if ((offset = body.shape.getMinY() - shape.getMinY()) < 0) {
+            //NORTH
+            cardinalPointOffset.put(CardinalPoint.N, offset);
         }
+        if ((offset = body.shape.getMaxX() - shape.getMaxX()) > 0) {
+            //EAST
+            cardinalPointOffset.put(CardinalPoint.E, offset);
+        }
+        if ((offset = body.shape.getMaxY() - shape.getMaxY()) > 0) {
+            //SOUTH
+            cardinalPointOffset.put(CardinalPoint.S, offset);
+        }
+        if ((offset = body.shape.getMinX() - shape.getMinX()) < 0) {
+            //WEST
+            cardinalPointOffset.put(CardinalPoint.W, offset);
+        }
+
+        if (!cardinalPointOffset.isEmpty()) {
+
+            violatedQuadrantCardinalPoints.put(this, cardinalPointOffset);
+        }
+
         this.nodes.add(body);
     }
 
@@ -189,12 +263,15 @@ public class Quadrant extends Node {
 
         if (this._bodyCounter == 0) {
 
+            //This adds the body and takes care whether the new mass exceeds one of the 4 boundaries of this quadrant
             addInternal(body);
         } else {
 
+            //If the particles gets putted deeper in the recursion tree (which is the case here), we reset the state of
+            //exceeded boundaries because only the quadrant counts, which counts only 1 particle.
             if (doesContentExceedsBoundaries()) {
 
-                exceededBoundaries.remove(this);
+                violatedQuadrantCardinalPoints.remove(this);
             }
 
             Quadrant subQuadrant;
@@ -226,15 +303,15 @@ public class Quadrant extends Node {
     private Quadrant getQuadrant(Locatable body) {
 
         Quadrant node = null;
-        CardinalPoint location = null;
+        BisectorCardinalPoint location = null;
 
         if (length == 1) {
 
             // Finds the first non existing quadrant in the map in order they are listed in enum class or returns the north west quadrant.
-            location = Arrays.stream(CardinalPoint.values())
+            location = Arrays.stream(BisectorCardinalPoint.values())
                     .filter(q -> !locations.containsKey(q))
                     .findFirst()
-                    .orElse(CardinalPoint.SE);
+                    .orElse(BisectorCardinalPoint.NW);
 
             // Regardless whether the quadrant exists or not, we want the first empty quadrant to be our new tree node. In most cases this would be the NW quadrant node.
             node = locations.putIfAbsent(
@@ -275,7 +352,7 @@ public class Quadrant extends Node {
 
             try {
 
-                location = CardinalPoint.getCardinalPoint(horizontal, vertical);
+                location = BisectorCardinalPoint.getBisectorCardinalPoint(horizontal, vertical);
 
                 node = locations.putIfAbsent(
                         location,
@@ -305,7 +382,7 @@ public class Quadrant extends Node {
      * @return
      */
     private boolean doesContentExceedsBoundaries() {
-        return exceededBoundaries.contains(this);
+        return violatedQuadrantCardinalPoints.containsKey(this);
     }
 
     /**

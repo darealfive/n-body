@@ -1,21 +1,126 @@
 package com.company;
 
+import java.util.Vector;
+
+import static com.company.CardinalPoint.Horizontal.*;
+import static com.company.CardinalPoint.Vertical.*;
+
 /**
  * Aggregates the two locations components "Horizontal" and "Vertical" to the 4 cardinal points
  */
 public enum CardinalPoint {
 
-    NE(Horizontal.NORTH, Vertical.EAST),
-    NW(Horizontal.NORTH, Vertical.WEST),
-    SE(Horizontal.SOUTH, Vertical.EAST),
-    SW(Horizontal.SOUTH, Vertical.WEST);
+    N(NORTH),
+    E(EAST),
+    S(SOUTH),
+    W(WEST);
 
-    private final Horizontal horizontal;
-    private final Vertical vertical;
+    public CardinalPoint getOpposite() {
+        Horizontal horizontal = null;
+        Vertical vertical = null;
 
-    CardinalPoint(Horizontal horizontal, Vertical vertical) {
-        this.horizontal = horizontal;
-        this.vertical = vertical;
+        if (isHorizontal()) {
+            horizontal = getHorizontal().getOpposite();
+        } else {
+            vertical = getVertical().getOpposite();
+        }
+
+        return getCardinalPoint(horizontal, vertical);
+    }
+
+    public Horizontal getHorizontal() {
+        return horizontal;
+    }
+
+    public Vertical getVertical() {
+        return vertical;
+    }
+
+    public final boolean isHorizontal() {
+        return horizontal != null;
+    }
+
+    public final boolean isVertical() {
+        return vertical != null;
+    }
+
+    public static Vector<CardinalPoint> getHorizontals() {
+        Vector<CardinalPoint> horizontals = new Vector<CardinalPoint>(2);
+        horizontals.add(N);
+        horizontals.add(S);
+        return horizontals;
+    }
+
+    public static Vector<CardinalPoint> getVerticals() {
+        Vector<CardinalPoint> verticals = new Vector<CardinalPoint>(2);
+        verticals.add(E);
+        verticals.add(W);
+        return verticals;
+    }
+
+    enum BisectorCardinalPoint {
+        NE(NORTH, EAST),
+        SE(SOUTH, EAST),
+        SW(SOUTH, WEST),
+        NW(NORTH, WEST);
+
+        private final Horizontal horizontal;
+        private final Vertical vertical;
+
+        BisectorCardinalPoint(Horizontal horizontal, Vertical vertical) {
+            this.horizontal = horizontal;
+            this.vertical = vertical;
+        }
+
+        /**
+         * Gets the bisector cardinal point for the locational combination of Vertical and Horizontal
+         *
+         * @param horizontal
+         * @param vertical
+         * @return
+         */
+        public static BisectorCardinalPoint getBisectorCardinalPoint(Horizontal horizontal, Vertical vertical) {
+
+            for (BisectorCardinalPoint location : BisectorCardinalPoint.values()) {
+
+                if (location.horizontal == horizontal && location.vertical == vertical) {
+
+                    return location;
+                }
+            }
+
+            throw new RuntimeException("There is no such BisectorCardinalPoint available");
+        }
+    }
+
+    /**
+     * Defines all possible horizontal directions
+     */
+    enum Horizontal {
+        NORTH, SOUTH;
+
+        public Horizontal getOpposite() {
+            if (equals(NORTH)) {
+                return SOUTH;
+            } else {
+                return NORTH;
+            }
+        }
+    }
+
+    /**
+     * Defines all possible vertical directions
+     */
+    enum Vertical {
+        EAST, WEST;
+
+        public Vertical getOpposite() {
+            if (equals(EAST)) {
+                return WEST;
+            } else {
+                return EAST;
+            }
+        }
     }
 
     /**
@@ -24,9 +129,8 @@ public enum CardinalPoint {
      * @param horizontal
      * @param vertical
      * @return
-     * @throws Exception
      */
-    public static CardinalPoint getCardinalPoint(Horizontal horizontal, Vertical vertical) throws Exception {
+    public static CardinalPoint getCardinalPoint(Horizontal horizontal, Vertical vertical) {
 
         for (CardinalPoint location : CardinalPoint.values()) {
 
@@ -36,40 +140,22 @@ public enum CardinalPoint {
             }
         }
 
-        throw new Exception("There is no such CardinalPoint available");
+        throw new RuntimeException("There is no such BisectorCardinalPoint available");
     }
 
-    /**
-     * Gets the horizontal component of the location.
-     *
-     * @return the horizontal component
-     */
-    public Horizontal getHorizontal() {
+    private final Horizontal horizontal;
+    private final Vertical vertical;
 
-        return horizontal;
+    CardinalPoint(Horizontal horizontal) {
+        this(horizontal, null);
     }
 
-    /**
-     * Gets the vertical component of the location.
-     *
-     * @return the vertical component
-     */
-    public Vertical getVertical() {
-
-        return vertical;
+    CardinalPoint(Vertical vertical) {
+        this(null, vertical);
     }
-}
 
-/**
- * Defines all possible horizontal directions
- */
-enum Horizontal {
-    NORTH, SOUTH
-}
-
-/**
- * Defines all possible vertical directions
- */
-enum Vertical {
-    EAST, WEST
+    CardinalPoint(Horizontal horizontal, Vertical vertical) {
+        this.horizontal = horizontal;
+        this.vertical = vertical;
+    }
 }
