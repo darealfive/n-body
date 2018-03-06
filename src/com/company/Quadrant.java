@@ -22,13 +22,13 @@ public class Quadrant extends Node {
 
     private List<NodeInterface> nodes = new ArrayList<>(4);
 
-    static HashMap<Quadrant, HashMap<CardinalPoint, Float>> violatedQuadrantCardinalPoints = new HashMap<>(1000);
+    static Map<Quadrant, Map<CardinalPoint, Float>> violatedQuadrantCardinalPoints = new HashMap<>(1000);
 
     private Quadrant parentNode = null;
 
     private BisectorCardinalPoint location = null;
 
-    private HashMap<BisectorCardinalPoint, Quadrant> locations = new HashMap<>(4);
+    private Map<BisectorCardinalPoint, Quadrant> locations = new HashMap<>(4);
 
     Quadrant(int length) {
         this(length, 0, 0);
@@ -174,8 +174,8 @@ public class Quadrant extends Node {
         }
 
         float offset;
-        HashMap<Horizontal, Float> horizontals = new HashMap<>(1);
-        HashMap<Vertical, Float> verticals = new HashMap<>(1);
+        Map<Horizontal, Float> horizontals = new HashMap<>(1);
+        Map<Vertical, Float> verticals = new HashMap<>(1);
         for (Map.Entry<CardinalPoint, Float> entrySet : violatedQuadrantCardinalPoints.get(this).entrySet()) {
 
             CardinalPoint violatedBoundary = entrySet.getKey();
@@ -227,7 +227,7 @@ public class Quadrant extends Node {
      */
     private void addInternal(Mass body) {
 
-        HashMap<CardinalPoint, Float> cardinalPointOffset = new HashMap<>(1);
+        Map<CardinalPoint, Float> cardinalPointOffset = new HashMap<>(1);
         float offset;
         if ((offset = body.shape.getMinY() - shape.getMinY()) < 0) {
             //NORTH
