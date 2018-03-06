@@ -11,7 +11,7 @@ class BarnesHutTree {
 
     Quadrant build() {
 
-        Quadrant rootQuadrant = new Quadrant(this.space.getWidth(), 0, 0);
+        Quadrant rootQuadrant = new Quadrant(this.space.getWidth());
         for (Mass body : space.getBodies()) {
 
             rootQuadrant.add(body);

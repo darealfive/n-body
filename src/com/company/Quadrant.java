@@ -30,7 +30,11 @@ public class Quadrant extends Node {
 
     private HashMap<BisectorCardinalPoint, Quadrant> locations = new HashMap<>(4);
 
-    Quadrant(int length, int startX, int startY) {
+    Quadrant(int length) {
+        this(length, 0, 0);
+    }
+
+    private Quadrant(int length, int startX, int startY) {
 
         super(new Square(startX, startY, length));
         this.length = (int) shape.getWidth();
