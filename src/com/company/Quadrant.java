@@ -227,7 +227,7 @@ public class Quadrant extends Node {
      */
     private void addInternal(Mass body) {
 
-        Map<CardinalPoint, Float> cardinalPointOffset = new HashMap<>(1);
+        Map<CardinalPoint, Float> cardinalPointOffset = new HashMap<>(2);
         float offset;
         if ((offset = body.shape.getMinY() - shape.getMinY()) < 0) {
             //NORTH
