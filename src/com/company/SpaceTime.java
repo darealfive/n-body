@@ -3,7 +3,8 @@ package com.company;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpaceTime {
 
@@ -20,15 +21,15 @@ public class SpaceTime {
 
     private Quadrant _rootNode;
 
-    private Vector<Mass> bodies = new Vector<>();
+    private List<Mass> bodies = new ArrayList<>(500);
 
-    public Vector<Mass> getBodies() {
+    public List<Mass> getBodies() {
         return bodies;
     }
 
     void addMass(Mass object) {
 
-        bodies.addElement(object);
+        bodies.add(object);
     }
 
     public int getWidth() {

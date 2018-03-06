@@ -1,6 +1,7 @@
 package com.company;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.company.CardinalPoint.Horizontal.*;
 import static com.company.CardinalPoint.Vertical.*;
@@ -44,15 +45,15 @@ public enum CardinalPoint {
         return vertical != null;
     }
 
-    public static Vector<CardinalPoint> getHorizontals() {
-        Vector<CardinalPoint> horizontals = new Vector<CardinalPoint>(2);
+    public static List<CardinalPoint> getHorizontals() {
+        List<CardinalPoint> horizontals = new ArrayList<>(2);
         horizontals.add(N);
         horizontals.add(S);
         return horizontals;
     }
 
-    public static Vector<CardinalPoint> getVerticals() {
-        Vector<CardinalPoint> verticals = new Vector<CardinalPoint>(2);
+    public static List<CardinalPoint> getVerticals() {
+        List<CardinalPoint> verticals = new ArrayList<>(2);
         verticals.add(E);
         verticals.add(W);
         return verticals;

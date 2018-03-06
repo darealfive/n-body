@@ -20,15 +20,15 @@ public class Quadrant extends Node {
 
     private Mass _body;
 
-    private Vector<NodeInterface> nodes = new Vector<>(1);
+    private List<NodeInterface> nodes = new ArrayList<>(4);
 
-    static HashMap<Quadrant, HashMap<CardinalPoint, Float>> violatedQuadrantCardinalPoints = new HashMap<>(1);
+    static HashMap<Quadrant, HashMap<CardinalPoint, Float>> violatedQuadrantCardinalPoints = new HashMap<>(1000);
 
     private Quadrant parentNode = null;
 
     private BisectorCardinalPoint location = null;
 
-    private HashMap<BisectorCardinalPoint, Quadrant> locations = new HashMap<>(1);
+    private HashMap<BisectorCardinalPoint, Quadrant> locations = new HashMap<>(4);
 
     Quadrant(int length, int startX, int startY) {
 
@@ -278,7 +278,7 @@ public class Quadrant extends Node {
             if (this._bodyCounter == 1) {
 
                 // Now the old body becomes a pseudo body (can get aggregated data)
-                this.nodes.removeElement(this._body);
+                this.nodes.remove(this._body);
 
                 subQuadrant = this.getQuadrant(this._body);
 
