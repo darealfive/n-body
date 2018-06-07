@@ -8,7 +8,7 @@ import org.newdawn.slick.geom.Shape;
 /**
  * Mass represents a mass in the spacetime. It has a center of mass but it has no vectors.
  */
-public class Mass extends Node {
+public class Mass extends Node implements Acceleratable {
 
     protected Color getColor() {
         return new Color(255, 0, 0, 100);
@@ -18,6 +18,32 @@ public class Mass extends Node {
 
     private double _mass;
 
+    double velocityX, velocityY, deltaVelocityX, deltaVelocityY;
+
+    public double getVelocityX() {
+        return velocityX;
+    }
+
+    public double getDeltaVelocityX() {
+        return deltaVelocityX;
+    }
+
+    public double getVelocityY() {
+        return velocityY;
+    }
+
+    public double getDeltaVelocityY() {
+        return deltaVelocityY;
+    }
+
+    void setVelocityX(double velocityX) {
+        this.velocityX = velocityX;
+    }
+
+    void setVelocityY(double velocityY) {
+        this.velocityY = velocityY;
+    }
+
     public double getCenterOfMassPosX() {
         return shape.getCenterX();
     }
@@ -26,11 +52,11 @@ public class Mass extends Node {
         return shape.getCenterY();
     }
 
-    private void setCenterOfMassPosX(double centerOfMassPosX) {
+    void setCenterOfMassPosX(double centerOfMassPosX) {
         shape.setCenterX((float) centerOfMassPosX);
     }
 
-    private  void setCenterOfMassPosY(double centerOfMassPosY) {
+    void setCenterOfMassPosY(double centerOfMassPosY) {
 
         shape.setCenterY((float) centerOfMassPosY);
     }
@@ -109,16 +135,12 @@ public class Mass extends Node {
         g.fillArc((int) (this.getCenterOfMassPosX() - (length / 2)), (int) (this.getCenterOfMassPosY() - (length / 2)), length, length, 0, 360);
     }
 
-    void updatePosX(SpaceTime spaceTime, double offset) {
-
-        setCenterOfMassPosX(spaceTime.determinePosX(this, offset));
-    }
-
-    void updatePosY(SpaceTime spaceTime, double offset) {
-
-        setCenterOfMassPosY(spaceTime.determinePosY(this, offset));
-    }
-
-    void applyPhysics(SpaceTime spaceTime) {
+    /**
+     * Resets delta values for the next calculations
+     */
+    void resetDeltas() {
+        deltaVelocity = 0;
+        deltaVelocityX = 0;
+        deltaVelocityY = 0;
     }
 }

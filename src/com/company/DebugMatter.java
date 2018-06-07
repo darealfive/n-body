@@ -41,7 +41,11 @@ public class DebugMatter extends Matter {
         return new Color(200, 150, 10);
     }
 
-    void applyPhysics(SpaceTime spaceTime) {
+    /**
+     * Resets delta values for the next calculations
+     */
+    @Override
+    void resetDeltas() {
 
         // Before super call will reset our vectors, we have to check how big they are to be able to show them
         lastVelocityX = deltaVelocityX;
@@ -54,7 +58,7 @@ public class DebugMatter extends Matter {
         if (absLastVelocityY > maxVelocityY) {
             maxVelocityY = absLastVelocityY;
         }
-        super.applyPhysics(spaceTime);
+        super.resetDeltas();
     }
 
     private void renderVelocity(Graphics g) {
