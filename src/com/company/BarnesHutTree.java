@@ -1,10 +1,15 @@
 package com.company;
 
+import org.newdawn.slick.Graphics;
+
+import java.util.HashMap;
+import java.util.Map;
+
 class BarnesHutTree {
 
     private final short macThreshold;
 
-    Quadrant rootNode;
+    private Quadrant rootNode;
 
     private Map<Quadrant, Map<CardinalPoint, Float>> violatedQuadrantCardinalPoints = new HashMap<>(1000);
 
@@ -51,5 +56,14 @@ class BarnesHutTree {
 
             quadrant.collisionDetection();
         }
+    }
+
+    void show(Graphics g) {
+        rootNode.show(g);
+        violatedQuadrantCardinalPoints.clear();
+    }
+
+    void calculateForce(Attractable body, double timePassed) {
+        rootNode.calculateForce(body, timePassed);
     }
 }
