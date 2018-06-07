@@ -68,8 +68,7 @@ public class SpaceTime {
     void run(double delta) {
 
         this.delta = delta;
-        BarnesHutTree tree = new BarnesHutTree(this);
-        this._rootNode = tree.build();
+        this._rootNode = BarnesHutTree.build(this);
 
         for (Attractable body : bodies) {
 

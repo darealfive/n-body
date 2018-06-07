@@ -2,11 +2,19 @@ package com.company;
 
 class BarnesHutTree {
 
-    private SpaceTime space;
+    /**
+     * @param spaceTime the space to build on top the barnes hut tree
+     * @return the root quadrant of the barnes hut tree
+     */
+    static Quadrant build(SpaceTime spaceTime) {
 
-    BarnesHutTree(SpaceTime space) {
+        Quadrant rootQuadrant = new Quadrant(spaceTime.getWidth());
+        for (Mass body : spaceTime.getBodies()) {
 
-        this.space = space;
+            rootQuadrant.add(body);
+        }
+
+        return rootQuadrant;
     }
 
     Quadrant build() {
