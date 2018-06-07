@@ -2,19 +2,29 @@ package com.company;
 
 class BarnesHutTree {
 
-    /**
-     * @param spaceTime the space to build on top the barnes hut tree
-     * @return the root quadrant of the barnes hut tree
-     */
-    static Quadrant build(SpaceTime spaceTime) {
+    final short macThreshold;
 
-        Quadrant rootQuadrant = new Quadrant(spaceTime.getWidth());
+    Quadrant rootNode;
+
+    private BarnesHutTree(short macThreshold) {
+        this.macThreshold = macThreshold;
+    }
+
+    /**
+     * @param spaceTime    the space to build on top the barnes hut tree
+     * @param macThreshold the threshold when to use approximated values and when not
+     * @return a BarnesHutTree instance
+     */
+    static BarnesHutTree build(SpaceTime spaceTime, short macThreshold) {
+
+        BarnesHutTree barnesHutTree = new BarnesHutTree(macThreshold);
+        barnesHutTree.rootNode = new Quadrant(spaceTime.getWidth(), barnesHutTree);
         for (Mass body : spaceTime.getBodies()) {
 
-            rootQuadrant.add(body);
+            barnesHutTree.rootNode.add(body);
         }
 
-        return rootQuadrant;
+        return barnesHutTree;
     }
 
     static void collisionDetection() {

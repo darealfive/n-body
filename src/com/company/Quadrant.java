@@ -14,7 +14,7 @@ public class Quadrant extends Node {
 
     private Color frameColor = new Color(255, 255, 255);
 
-    private static final short MAC_TRESHOLD = 1;
+    private final BarnesHutTree barnesHutTree;
 
     private int _bodyCounter = 0;
 
@@ -30,14 +30,15 @@ public class Quadrant extends Node {
 
     private Map<BisectorCardinalPoint, Quadrant> locations = new HashMap<>(4);
 
-    Quadrant(int length) {
-        this(length, 0, 0);
+    Quadrant(int length, BarnesHutTree barnesHutTree) {
+        this(length, 0, 0, barnesHutTree);
     }
 
-    private Quadrant(int length, int startX, int startY) {
+    private Quadrant(int length, int startX, int startY, BarnesHutTree barnesHutTree) {
 
         super(new Square(startX, startY, length));
         this.length = (int) shape.getWidth();
+        this.barnesHutTree = barnesHutTree;
     }
 
     private Quadrant(Quadrant parentNode, BisectorCardinalPoint location, int length, int startX, int startY) {
@@ -48,7 +49,7 @@ public class Quadrant extends Node {
 
     private Quadrant(Quadrant parentNode, int length, int startX, int startY) {
 
-        this(length, startX, startY);
+        this(length, startX, startY, parentNode.barnesHutTree);
         this.parentNode = parentNode;
     }
 
@@ -138,7 +139,7 @@ public class Quadrant extends Node {
         } else {
 
             //Calculate MAC (multipole acceptance criterion)
-            if (getMAC(body) < MAC_TRESHOLD) {
+            if (getMAC(body) < barnesHutTree.macThreshold) {
 
                 if (body instanceof DebugMatter) {
                     this.fill = true;

@@ -7,24 +7,24 @@ import org.newdawn.slick.Graphics;
  */
 public class BarnesHutPhysics extends PhysicsEngine {
 
-    private Quadrant rootNode;
+    private BarnesHutTree barnesHutTree;
 
-    BarnesHutPhysics(SpaceTime spaceTime) {
+    BarnesHutPhysics(SpaceTime spaceTime, short macThreshold) {
         super(spaceTime);
-        rootNode = BarnesHutTree.build(spaceTime);
+        barnesHutTree = BarnesHutTree.build(spaceTime, macThreshold);
     }
 
     @Override
     public void run() {
         for (Attractable body : spaceTime.getBodies()) {
 
-            rootNode.calculateForce(body, spaceTime.delta);
+            getRootNode().calculateForce(body, spaceTime.delta);
         }
     }
 
     @Override
     public void show(Graphics g) {
-        rootNode.show(g);
+        getRootNode().show(g);
         Quadrant.violatedQuadrantCardinalPoints.clear();
     }
 
@@ -32,5 +32,14 @@ public class BarnesHutPhysics extends PhysicsEngine {
     void applyPhysics() {
         super.applyPhysics();
         BarnesHutTree.collisionDetection();
+    }
+
+    /**
+     * Gets the root node Quadrant of the Barnes-Hut tree.
+     *
+     * @return the root node
+     */
+    private Quadrant getRootNode() {
+        return barnesHutTree.rootNode;
     }
 }
