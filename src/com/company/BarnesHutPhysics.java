@@ -25,13 +25,13 @@ public class BarnesHutPhysics extends PhysicsEngine {
     @Override
     public void show(Graphics g) {
         getRootNode().show(g);
-        Quadrant.violatedQuadrantCardinalPoints.clear();
+        barnesHutTree.getViolatedQuadrantCardinalPoints().clear();
     }
 
     @Override
     void applyPhysics() {
         super.applyPhysics();
-        BarnesHutTree.collisionDetection();
+        barnesHutTree.collisionDetection();
     }
 
     /**

@@ -6,7 +6,7 @@ import org.newdawn.slick.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpaceTime {
+class SpaceTime {
 
     double delta = 0;
 
@@ -41,7 +41,7 @@ public class SpaceTime {
         return height;
     }
 
-    public SpaceTime(int width, int height) {
+    SpaceTime(int width, int height) {
 
         this.width = width;
         this.height = height;

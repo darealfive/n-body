@@ -22,8 +22,6 @@ public class Quadrant extends Node {
 
     private List<NodeInterface> nodes = new ArrayList<>(4);
 
-    static Map<Quadrant, Map<CardinalPoint, Float>> violatedQuadrantCardinalPoints = new HashMap<>(1000);
-
     private Quadrant parentNode = null;
 
     private BisectorCardinalPoint location = null;
@@ -139,7 +137,7 @@ public class Quadrant extends Node {
         } else {
 
             //Calculate MAC (multipole acceptance criterion)
-            if (getMAC(body) < barnesHutTree.macThreshold) {
+            if (getMAC(body) < barnesHutTree.getMacThreshold()) {
 
                 if (body instanceof DebugMatter) {
                     this.fill = true;
@@ -177,7 +175,7 @@ public class Quadrant extends Node {
         float offset;
         Map<Horizontal, Float> horizontals = new HashMap<>(1);
         Map<Vertical, Float> verticals = new HashMap<>(1);
-        for (Map.Entry<CardinalPoint, Float> entrySet : violatedQuadrantCardinalPoints.get(this).entrySet()) {
+        for (Map.Entry<CardinalPoint, Float> entrySet : barnesHutTree.getViolatedQuadrantCardinalPoints().get(this).entrySet()) {
 
             CardinalPoint violatedBoundary = entrySet.getKey();
             offset = entrySet.getValue();
@@ -249,7 +247,7 @@ public class Quadrant extends Node {
 
         if (!cardinalPointOffset.isEmpty()) {
 
-            violatedQuadrantCardinalPoints.put(this, cardinalPointOffset);
+            barnesHutTree.getViolatedQuadrantCardinalPoints().put(this, cardinalPointOffset);
         }
 
         this.nodes.add(body);
@@ -276,7 +274,7 @@ public class Quadrant extends Node {
             //exceeded boundaries because only the quadrant counts, which counts only 1 particle.
             if (doesContentExceedsBoundaries()) {
 
-                violatedQuadrantCardinalPoints.remove(this);
+                barnesHutTree.getViolatedQuadrantCardinalPoints().remove(this);
             }
 
             Quadrant subQuadrant;
@@ -387,7 +385,7 @@ public class Quadrant extends Node {
      * @return
      */
     private boolean doesContentExceedsBoundaries() {
-        return violatedQuadrantCardinalPoints.containsKey(this);
+        return barnesHutTree.getViolatedQuadrantCardinalPoints().containsKey(this);
     }
 
     /**

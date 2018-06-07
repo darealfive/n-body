@@ -2,9 +2,27 @@ package com.company;
 
 class BarnesHutTree {
 
-    final short macThreshold;
+    private final short macThreshold;
 
     Quadrant rootNode;
+
+    private Map<Quadrant, Map<CardinalPoint, Float>> violatedQuadrantCardinalPoints = new HashMap<>(1000);
+
+    /**
+     * Getter for macThreshold
+     *
+     * @return the MAC threshold
+     */
+    short getMacThreshold() {
+        return macThreshold;
+    }
+
+    /**
+     * @return map of all Quadrant objects whose boundaries were exceeded by its body
+     */
+    Map<Quadrant, Map<CardinalPoint, Float>> getViolatedQuadrantCardinalPoints() {
+        return violatedQuadrantCardinalPoints;
+    }
 
     private BarnesHutTree(short macThreshold) {
         this.macThreshold = macThreshold;
@@ -27,9 +45,9 @@ class BarnesHutTree {
         return barnesHutTree;
     }
 
-    static void collisionDetection() {
+    void collisionDetection() {
 
-        for (Quadrant quadrant : Quadrant.violatedQuadrantCardinalPoints.keySet()) {
+        for (Quadrant quadrant : violatedQuadrantCardinalPoints.keySet()) {
 
             quadrant.collisionDetection();
         }
