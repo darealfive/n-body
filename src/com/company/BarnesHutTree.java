@@ -17,14 +17,11 @@ class BarnesHutTree {
         return rootQuadrant;
     }
 
-    Quadrant build() {
+    static void collisionDetection() {
 
-        Quadrant rootQuadrant = new Quadrant(this.space.getWidth());
-        for (Mass body : space.getBodies()) {
+        for (Quadrant quadrant : Quadrant.violatedQuadrantCardinalPoints.keySet()) {
 
-            rootQuadrant.add(body);
+            quadrant.collisionDetection();
         }
-
-        return rootQuadrant;
     }
 }

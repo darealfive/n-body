@@ -8,22 +8,23 @@ import java.util.List;
 
 public class SpaceTime {
 
-    public double delta = 0;
+    double delta = 0;
+
     /**
      * The area dimension in percent at the edge of the universe is a bit sticky for every {@link Acceleratable} body.
      * So they will slow down dependent till the end of the universe to a speed of 0 (if they reach the end).
      */
     private static final short stickyArea = 5;
 
-    private double stickyAreaDimensionX, stickyAreaDimensionY;
+    private final int width, height;
 
-    private int width, height;
+    private final double stickyAreaDimensionX, stickyAreaDimensionY;
 
-    private Quadrant _rootNode;
+    private PhysicsEngine physicsEngine;
 
     private List<Mass> bodies = new ArrayList<>(500);
 
-    public List<Mass> getBodies() {
+    List<Mass> getBodies() {
         return bodies;
     }
 
@@ -49,13 +50,11 @@ public class SpaceTime {
         stickyAreaDimensionY = ((this.height / 100.0f) * (double) stickyArea);
     }
 
-    public void render(Graphics graphics) {
+    void render(Graphics graphics) {
 
-        if (this._rootNode != null) {
-
-            applyPhysics();
-            this._rootNode.show(graphics);
-
+        if (physicsEngine != null) {
+            physicsEngine.applyPhysics();
+            physicsEngine.show(graphics);
             DebugMatter.maxVelocityX = 0;
             DebugMatter.maxVelocityY = 0;
         }
@@ -68,24 +67,9 @@ public class SpaceTime {
     void run(double delta) {
 
         this.delta = delta;
-        this._rootNode = BarnesHutTree.build(this);
-
-        for (Attractable body : bodies) {
-
-            this._rootNode.calculateForce(body, delta);
-        }
-    }
-
-    /**
-     * Applies a quantum "measurement" to concretize the actual location in the spacetime.
-     * Think of the superposition of an object.
-     */
-    private void applyPhysics() {
-
-        for (Mass body : this.bodies) {
-
-            body.applyPhysics(this);
-        }
+        //physicsEngine = new BrutforcePhysics(this);
+        physicsEngine = new BarnesHutPhysics(this);
+        physicsEngine.run();
     }
 
     double determineVelocityX(Acceleratable body, double deltaVelocityX) {
