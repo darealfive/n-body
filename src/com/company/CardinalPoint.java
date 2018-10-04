@@ -16,6 +16,22 @@ public enum CardinalPoint {
     S(SOUTH),
     W(WEST);
 
+    private final Horizontal horizontal;
+    private final Vertical vertical;
+
+    CardinalPoint(Horizontal horizontal) {
+        this(horizontal, null);
+    }
+
+    CardinalPoint(Vertical vertical) {
+        this(null, vertical);
+    }
+
+    CardinalPoint(Horizontal horizontal, Vertical vertical) {
+        this.horizontal = horizontal;
+        this.vertical = vertical;
+    }
+
     public CardinalPoint getOpposite() {
         Horizontal horizontal = null;
         Vertical vertical = null;
@@ -57,6 +73,27 @@ public enum CardinalPoint {
         verticals.add(E);
         verticals.add(W);
         return verticals;
+    }
+
+    /**
+     * Internally gets the cardinal point for the locational combination of Vertical and Horizontal.
+     * Note that only one of both of them can be set at a time!
+     *
+     * @param horizontal
+     * @param vertical
+     * @return
+     */
+    private static CardinalPoint getCardinalPoint(Horizontal horizontal, Vertical vertical) {
+
+        for (CardinalPoint location : CardinalPoint.values()) {
+
+            if (location.horizontal == horizontal && location.vertical == vertical) {
+
+                return location;
+            }
+        }
+
+        throw new RuntimeException("There is no such BisectorCardinalPoint available");
     }
 
     enum BisectorCardinalPoint {
@@ -138,42 +175,5 @@ public enum CardinalPoint {
                 return EAST;
             }
         }
-    }
-
-    /**
-     * Internally gets the cardinal point for the locational combination of Vertical and Horizontal.
-     * Note that only one of both of them can be set at a time!
-     *
-     * @param horizontal
-     * @param vertical
-     * @return
-     */
-    private static CardinalPoint getCardinalPoint(Horizontal horizontal, Vertical vertical) {
-
-        for (CardinalPoint location : CardinalPoint.values()) {
-
-            if (location.horizontal == horizontal && location.vertical == vertical) {
-
-                return location;
-            }
-        }
-
-        throw new RuntimeException("There is no such BisectorCardinalPoint available");
-    }
-
-    private final Horizontal horizontal;
-    private final Vertical vertical;
-
-    CardinalPoint(Horizontal horizontal) {
-        this(horizontal, null);
-    }
-
-    CardinalPoint(Vertical vertical) {
-        this(null, vertical);
-    }
-
-    CardinalPoint(Horizontal horizontal, Vertical vertical) {
-        this.horizontal = horizontal;
-        this.vertical = vertical;
     }
 }
