@@ -154,11 +154,7 @@ public enum CardinalPoint {
         NORTH, SOUTH;
 
         public Horizontal getOpposite() {
-            if (equals(NORTH)) {
-                return SOUTH;
-            } else {
-                return NORTH;
-            }
+            return equals(NORTH) ? SOUTH : NORTH;
         }
     }
 
@@ -169,11 +165,7 @@ public enum CardinalPoint {
         EAST, WEST;
 
         public Vertical getOpposite() {
-            if (equals(EAST)) {
-                return WEST;
-            } else {
-                return EAST;
-            }
+            return equals(EAST) ? WEST : EAST;
         }
     }
 }
