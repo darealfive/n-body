@@ -52,9 +52,9 @@ class BarnesHutTree {
 
     void collisionDetection() {
 
-        for (Quadrant quadrant : violatedQuadrantCardinalPoints.keySet()) {
+        for (Map.Entry<Quadrant, Map<CardinalPoint, Float>> entrySet : violatedQuadrantCardinalPoints.entrySet()) {
 
-            quadrant.collisionDetection();
+            entrySet.getKey().collisionDetection(entrySet.getValue());
         }
     }
 

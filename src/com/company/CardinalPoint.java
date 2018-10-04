@@ -74,6 +74,22 @@ public enum CardinalPoint {
         }
 
         /**
+         * Checks whether this contains given CardinalPoint in its directions
+         *
+         * @param cardinalPoint
+         * @return
+         */
+        public boolean containsCardinalPoint(CardinalPoint cardinalPoint) {
+            return horizontal == cardinalPoint.horizontal || vertical == cardinalPoint.vertical;
+        }
+
+        public BisectorCardinalPoint getCombinedWithCardinalPoint(CardinalPoint cardinalPoint) {
+            return cardinalPoint.isVertical() ?
+                    getBisectorCardinalPoint(horizontal, cardinalPoint.vertical) :
+                    getBisectorCardinalPoint(cardinalPoint.horizontal, vertical);
+        }
+
+        /**
          * Gets the bisector cardinal point for the locational combination of Vertical and Horizontal
          *
          * @param horizontal
@@ -125,13 +141,14 @@ public enum CardinalPoint {
     }
 
     /**
-     * Gets the cardinal point for the locational combination of Vertical and Horizontal
+     * Internally gets the cardinal point for the locational combination of Vertical and Horizontal.
+     * Note that only one of both of them can be set at a time!
      *
      * @param horizontal
      * @param vertical
      * @return
      */
-    public static CardinalPoint getCardinalPoint(Horizontal horizontal, Vertical vertical) {
+    private static CardinalPoint getCardinalPoint(Horizontal horizontal, Vertical vertical) {
 
         for (CardinalPoint location : CardinalPoint.values()) {
 

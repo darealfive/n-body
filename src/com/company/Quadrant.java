@@ -5,6 +5,7 @@ import org.newdawn.slick.Graphics;
 import com.company.CardinalPoint.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Quadrant extends Node {
 
@@ -24,6 +25,9 @@ public class Quadrant extends Node {
 
     private Quadrant parentNode = null;
 
+    /**
+     * TODO delete location since a quadrant can not know where he's located in its parent node.
+     */
     private BisectorCardinalPoint location = null;
 
     private Map<BisectorCardinalPoint, Quadrant> locations = new HashMap<>(4);
@@ -155,30 +159,130 @@ public class Quadrant extends Node {
         }
     }
 
-    private void resolveBisectorCardinalCollision(BisectorCardinalPoint origLocation, Mass body, BisectorCardinalPoint bisectorCardinalPoint, float offsetX, float offsetY) {
-        float a = 0;
+    private int resolveBisectorCardinalCollision(BisectorCardinalPoint origLocation, Mass body, BisectorCardinalPoint bisectorCardinalPoint, float offsetX, float offsetY) {
+        return 0;
     }
 
-    private void resolveCardinalCollision(BisectorCardinalPoint bisectorCardinalPointMass, Mass body, CardinalPoint cardinalPointOffset, float offset) {
+    /**
+     * Traverse as long as needed up the parent quadrants till child quadrant is found which may be touched by our
+     * particle.
+     *
+     * @param breadcrumbs         the path to find a route back to the inner quadrants which may be touched by out particle
+     * @param body                the particle which exceeds a boundary of its enclosing quadrant
+     * @param cardinalPointOffset the violated boundary
+     * @param offset              relative to the outer violated boundary
+     * @return number of collisions detected
+     */
+    private int resolveCardinalCollision(Deque<BisectorCardinalPoint> breadcrumbs, Mass body, CardinalPoint cardinalPointOffset, float offset) {
 
-        /*if (bisectorCardinalPointMass.contains(cardinalPointOffset)) {
+        int collisions = 0;
+        //Gets the source quadrant bisector cardinal point
+        BisectorCardinalPoint bisectorCardinalPointMass = breadcrumbs.getLast();
 
-        }*/
+        //Have we come from the target direction? If yes, we must check parent quadrants because here we don't find a
+        //foreign quadrant which exists on target direction.
+        if (bisectorCardinalPointMass.containsCardinalPoint(cardinalPointOffset)) {
+
+            //If we can not look more from the outside, there is no collision we can expect anymore and the particle
+            //does not collide with anything.
+            if (null == parentNode) {
+                return collisions;
+            }
+
+            //Adds this to the end of the breadcrumbs to complete the path to this call
+            breadcrumbs.addLast(location);
+            collisions = parentNode.resolveCardinalCollision(breadcrumbs, body, cardinalPointOffset, offset);
+        } else {
+
+            //The target quadrant should be located in the opposite direction of our source quadrant we are coming from.
+            BisectorCardinalPoint targetBisectorCardinalPoint = bisectorCardinalPointMass.getCombinedWithCardinalPoint(cardinalPointOffset);
+            Quadrant checkQuadrant = locations.get(targetBisectorCardinalPoint);
+
+            if (checkQuadrant != null) {
+
+                // Note that offset might be less than the original offset due to void quadrants we jumped over to get
+                // there where we are now => the offset is relative to the quadrant we are currently checking
+                collisions = checkQuadrant.searchCollisions(breadcrumbs.descendingIterator(), body, cardinalPointOffset.getOpposite(), offset);
+            }
+
+            if (parentNode != null && ((offset -= (((float) length) / 2)) > 0)) {
+
+                //Adds this to the end of the breadcrumbs to complete the path to this call
+                breadcrumbs.addLast(location);
+                collisions += parentNode.resolveCardinalCollision(breadcrumbs, body, cardinalPointOffset, offset);
+            }
+        }
+
+        return collisions;
     }
 
-    void collisionDetection() {
+    private int searchCollisions(Iterator<BisectorCardinalPoint> breadcrumbs, Mass body, CardinalPoint targetDirection, float offset) {
+
+        if (breadcrumbs.hasNext()) {
+
+            BisectorCardinalPoint nextTarget = breadcrumbs.next();
+            BisectorCardinalPoint location = nextTarget.getCombinedWithCardinalPoint(targetDirection);
+        }
+
+        if (_bodyCounter == 1) {
+
+            return body.collidesWith(_body) ? 1 : 0;
+        }
+
+        // Collect list of existing locations we have to check in this node
+        //Set<Map.Entry<BisectorCardinalPoint, Quadrant>> targets = locations.entrySet();
+        Map<BisectorCardinalPoint, Quadrant> targets = new HashMap<>(locations);
+
+        // Here we check if it be valid to not check all locations in this node
+        if ((((float) length) / 2) > offset) {
+            //TODO the positions of particles using its shape is not accurate: init x with 266 and you will get 255!!!! FIX IT
+            //targets.removeIf(e -> !e.getKey().containsCardinalPoint(targetDirection));
+            targets = targets.entrySet()
+                    .stream()
+                    .filter(e -> e.getKey().containsCardinalPoint(targetDirection))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }
+
+        int collisions = 0;
+        if (!targets.isEmpty()) {
+
+            for (Map.Entry<BisectorCardinalPoint, Quadrant> target : targets.entrySet()) {
+
+                target.getValue().searchCollisions(breadcrumbs, body, targetDirection, offset);
+            }
+        }
+
+        return collisions;
+    }
+
+    /**
+     * Detects collisions of this particle with another particle of another quadrant. The check includes only quadrants
+     * which are located in the provided direction (limited by the amount of offset the boundary has been exceeded).
+     * <p>
+     * Following steps will be executed:
+     * 1. Store the source direction {@link BisectorCardinalPoint} as breadcrumbs to navigate trough the binary tree
+     * 2. Step 1 level up the parent node and start searching at provided directions
+     *
+     * @param violatedBoundariesOffsets all violated boundaries (with their offset violation) of this quadrant to check.
+     */
+    void collisionDetection(Map<CardinalPoint, Float> violatedBoundariesOffsets) {
 
         if (_bodyCounter > 1) {
+
             throw new RuntimeException("Counted more than one body");
         }
 
+        int collisionsDetected = 0;
         float offset;
+        CardinalPoint violatedBoundary;
+        Deque<BisectorCardinalPoint> breadcrumbs;
+        //We might encounter every combination of both horizontal and vertical collision directions.
         Map<Horizontal, Float> horizontals = new HashMap<>(1);
         Map<Vertical, Float> verticals = new HashMap<>(1);
-        for (Map.Entry<CardinalPoint, Float> entrySet : barnesHutTree.getViolatedQuadrantCardinalPoints().get(this).entrySet()) {
+        for (Map.Entry<CardinalPoint, Float> violatedBoundaryOffset : violatedBoundariesOffsets.entrySet()) {
 
-            CardinalPoint violatedBoundary = entrySet.getKey();
-            offset = entrySet.getValue();
+            violatedBoundary = violatedBoundaryOffset.getKey();
+            offset = violatedBoundaryOffset.getValue();
             //Resolve collisions in the exceeded boundaries.
             //Additionally build all possible bisector cardinal points out of all violated cardinal points to iterate later trough
             if (violatedBoundary.isHorizontal()) {
@@ -189,7 +293,10 @@ public class Quadrant extends Node {
                 verticals.put(violatedBoundary.getVertical(), offset);
             }
 
-            parentNode.resolveCardinalCollision(location, _body, violatedBoundary, offset);
+            breadcrumbs = new LinkedList<>();
+            breadcrumbs.add(location);
+
+            collisionsDetected += parentNode.resolveCardinalCollision(breadcrumbs, _body, violatedBoundary, offset);
         }
 
         //TODO Wenn bspw. im Norden und Westen die Grenzen überschritten werden, heißt das nicht unbedingt, dass auch die Nordwestliche Ecke überschriten wurde.
@@ -202,11 +309,10 @@ public class Quadrant extends Node {
                         vertical.getKey()
                 );
 
-                parentNode.resolveBisectorCardinalCollision(location, _body, bisectorCardinalPoint, vertical.getValue(), horizontal.getValue());
+                collisionsDetected += parentNode.resolveBisectorCardinalCollision(location, _body, bisectorCardinalPoint, vertical.getValue(), horizontal.getValue());
             }
         }
     }
-
 
     /**
      * Gets the actual MAC (Multipole-Acceptance-Criterion) to a given body
