@@ -1,5 +1,7 @@
 package com.company;
 
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import com.company.CardinalPoint.*;
@@ -26,11 +28,9 @@ public class Quadrant extends Node {
     private Quadrant parentNode = null;
 
     /**
-     * TODO delete location since a quadrant can not know where he's located in its parent node.
+     * Bidirectional connects BisectorCardinalPoint with Quadrant
      */
-    private BisectorCardinalPoint location = null;
-
-    private Map<BisectorCardinalPoint, Quadrant> locations = new HashMap<>(4);
+    private BidiMap<BisectorCardinalPoint, Quadrant> locations = new DualHashBidiMap<>();
 
     Quadrant(int length, BarnesHutTree barnesHutTree) {
         this(length, 0, 0, barnesHutTree);
@@ -41,12 +41,6 @@ public class Quadrant extends Node {
         super(new Square(startX, startY, length));
         this.length = (int) shape.getWidth();
         this.barnesHutTree = barnesHutTree;
-    }
-
-    private Quadrant(Quadrant parentNode, BisectorCardinalPoint location, int length, int startX, int startY) {
-
-        this(parentNode, length, startX, startY);
-        this.location = location;
     }
 
     private Quadrant(Quadrant parentNode, int length, int startX, int startY) {
@@ -91,10 +85,17 @@ public class Quadrant extends Node {
             g.draw(shape);
         }
 
-        /*if (_bodyCounter == 1 && location != null) {
+        /*if (location != null) {
 
-            g.drawString(location.name(), shape.getX(), shape.getY());
+            if (_bodyCounter == 1) {
+
+                g.drawString(location.name(), (shape.getMinX() + shape.getMaxX()) / 2 - 10, (shape.getMinY() + shape.getMaxY()) / 2 - 10);
+            } else {
+
+                g.drawString(location.name(), shape.getX(), shape.getY());
+            }
         }*/
+
         /*
         Quadrant node;
         for (Map.Entry<BisectorCardinalPoint, Quadrant> entry : this.locations.entrySet()) {
@@ -167,21 +168,23 @@ public class Quadrant extends Node {
      * Traverse as long as needed up the parent quadrants till child quadrant is found which may be touched by our
      * particle.
      *
+     * @param sourceQuadrant      the source quadrant which called this method
      * @param breadcrumbs         the path to find a route back to the inner quadrants which may be touched by out particle
      * @param body                the particle which exceeds a boundary of its enclosing quadrant
      * @param cardinalPointOffset the violated boundary
      * @param offset              relative to the outer violated boundary
      * @return number of collisions detected
      */
-    private int resolveCardinalCollision(Deque<BisectorCardinalPoint> breadcrumbs, Mass body, CardinalPoint cardinalPointOffset, float offset) {
+    private int resolveCardinalCollision(Quadrant sourceQuadrant, Deque<BisectorCardinalPoint> breadcrumbs, Mass body, CardinalPoint cardinalPointOffset, float offset) {
+
+        //Gets the bisector cardinal point of source quadrant
+        BisectorCardinalPoint sourceBisectorCardinalPoint = locations.getKey(sourceQuadrant);
 
         int collisions = 0;
-        //Gets the source quadrant bisector cardinal point
-        BisectorCardinalPoint bisectorCardinalPointMass = breadcrumbs.getLast();
 
         //Have we come from the target direction? If yes, we must check parent quadrants because here we don't find a
         //foreign quadrant which exists on target direction.
-        if (bisectorCardinalPointMass.containsCardinalPoint(cardinalPointOffset)) {
+        if (sourceBisectorCardinalPoint.containsCardinalPoint(cardinalPointOffset)) {
 
             //If we can not look more from the outside, there is no collision we can expect anymore and the particle
             //does not collide with anything.
@@ -190,12 +193,12 @@ public class Quadrant extends Node {
             }
 
             //Adds this to the end of the breadcrumbs to complete the path to this call
-            breadcrumbs.addLast(location);
-            collisions = parentNode.resolveCardinalCollision(breadcrumbs, body, cardinalPointOffset, offset);
+            breadcrumbs.addLast(sourceBisectorCardinalPoint);
+            collisions = parentNode.resolveCardinalCollision(this, breadcrumbs, body, cardinalPointOffset, offset);
         } else {
 
             //The target quadrant should be located in the opposite direction of our source quadrant we are coming from.
-            BisectorCardinalPoint targetBisectorCardinalPoint = bisectorCardinalPointMass.getCombinedWithCardinalPoint(cardinalPointOffset);
+            BisectorCardinalPoint targetBisectorCardinalPoint = sourceBisectorCardinalPoint.getCombinedWithCardinalPoint(cardinalPointOffset);
             Quadrant checkQuadrant = locations.get(targetBisectorCardinalPoint);
 
             if (checkQuadrant != null) {
@@ -208,8 +211,8 @@ public class Quadrant extends Node {
             if (parentNode != null && ((offset -= (((float) length) / 2)) > 0)) {
 
                 //Adds this to the end of the breadcrumbs to complete the path to this call
-                breadcrumbs.addLast(location);
-                collisions += parentNode.resolveCardinalCollision(breadcrumbs, body, cardinalPointOffset, offset);
+                breadcrumbs.addLast(sourceBisectorCardinalPoint);
+                collisions += parentNode.resolveCardinalCollision(this, breadcrumbs, body, cardinalPointOffset, offset);
             }
         }
 
@@ -248,7 +251,7 @@ public class Quadrant extends Node {
 
             for (Map.Entry<BisectorCardinalPoint, Quadrant> target : targets.entrySet()) {
 
-                target.getValue().searchCollisions(breadcrumbs, body, targetDirection, offset);
+                collisions += target.getValue().searchCollisions(breadcrumbs, body, targetDirection, offset);
             }
         }
 
@@ -293,10 +296,7 @@ public class Quadrant extends Node {
                 verticals.put(violatedBoundary.getVertical(), offset);
             }
 
-            breadcrumbs = new LinkedList<>();
-            breadcrumbs.add(location);
-
-            collisionsDetected += parentNode.resolveCardinalCollision(breadcrumbs, _body, violatedBoundary, offset);
+            collisionsDetected += parentNode.resolveCardinalCollision(this, new LinkedList<>(), _body, violatedBoundary, offset);
         }
 
         //TODO Wenn bspw. im Norden und Westen die Grenzen überschritten werden, heißt das nicht unbedingt, dass auch die Nordwestliche Ecke überschriten wurde.
@@ -309,7 +309,7 @@ public class Quadrant extends Node {
                         vertical.getKey()
                 );
 
-                collisionsDetected += parentNode.resolveBisectorCardinalCollision(location, _body, bisectorCardinalPoint, vertical.getValue(), horizontal.getValue());
+                //collisionsDetected += parentNode.resolveBisectorCardinalCollision(location, _body, bisectorCardinalPoint, vertical.getValue(), horizontal.getValue());
             }
         }
     }
@@ -425,7 +425,7 @@ public class Quadrant extends Node {
             // Regardless whether the quadrant exists or not, we want the first empty quadrant to be our new tree node. In most cases this would be the NW quadrant node.
             node = locations.putIfAbsent(
                     location,
-                    new Quadrant(this, location, 1, 1, 1)
+                    new Quadrant(this, 1, 1, 1)
             );
 
         } else {
@@ -465,7 +465,7 @@ public class Quadrant extends Node {
 
                 node = locations.putIfAbsent(
                         location,
-                        new Quadrant(this, location, quadrantSideLength, startPosX, startPosY)
+                        new Quadrant(this, quadrantSideLength, startPosX, startPosY)
                 );
 
             } catch (Exception e) {
