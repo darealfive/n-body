@@ -411,8 +411,8 @@ public class Quadrant extends Node {
 
     private Quadrant getQuadrant(Locatable body) {
 
-        Quadrant node = null;
-        BisectorCardinalPoint location = null;
+        Quadrant node;
+        BisectorCardinalPoint location;
 
         if (length == 1) {
 
@@ -459,19 +459,9 @@ public class Quadrant extends Node {
                 startPosX = posXendOfWest;
             }
 
-            try {
+            location = BisectorCardinalPoint.getBisectorCardinalPoint(horizontal, vertical);
 
-                location = BisectorCardinalPoint.getBisectorCardinalPoint(horizontal, vertical);
-
-                node = locations.putIfAbsent(
-                        location,
-                        new Quadrant(this, quadrantSideLength, startPosX, startPosY)
-                );
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
+            node = locations.putIfAbsent(location, new Quadrant(this, quadrantSideLength, startPosX, startPosY));
         }
 
         // Is null if element was not there before putIfAbsent => no body in it. This also means it is new and needs to
