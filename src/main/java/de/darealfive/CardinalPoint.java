@@ -1,10 +1,10 @@
-package com.company;
+package de.darealfive;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.company.CardinalPoint.Horizontal.*;
-import static com.company.CardinalPoint.Vertical.*;
+import static de.darealfive.CardinalPoint.Horizontal.*;
+import static de.darealfive.CardinalPoint.Vertical.*;
 
 /**
  * Aggregates the two locations components "Horizontal" and "Vertical" to the 4 cardinal points

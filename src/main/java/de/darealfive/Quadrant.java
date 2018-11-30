@@ -1,10 +1,10 @@
-package com.company;
+package de.darealfive;
 
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import com.company.CardinalPoint.*;
+import de.darealfive.CardinalPoint.*;
 
 import java.util.*;
 import java.util.stream.Collectors;

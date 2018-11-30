@@ -1,4 +1,4 @@
-package com.company;
+package de.darealfive;
 
 import org.newdawn.slick.Graphics;
 

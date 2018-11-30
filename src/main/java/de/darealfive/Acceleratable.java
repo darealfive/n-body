@@ -1,4 +1,4 @@
-package com.company;
+package de.darealfive;
 
 interface Acceleratable extends Locatable {
 
