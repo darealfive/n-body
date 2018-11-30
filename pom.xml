@@ -16,13 +16,43 @@
         <dependency>
             <groupId>org.slick2d</groupId>
             <artifactId>slick2d-core</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.lwjgl.lwjgl</groupId>
+            <artifactId>lwjgl</artifactId>
+            <version>2.9.3</version>
+        </dependency>
+
     </dependencies>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>10</maven.compiler.source>
         <maven.compiler.target>10</maven.compiler.target>
+        <natives.version>0.0.7</natives.version>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.googlecode.mavennatives</groupId>
+                <artifactId>maven-nativedependencies-plugin</artifactId>
+                <version>${natives.version}</version>
+                <executions>
+                    <execution>
+                        <id>unpacknatives</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <nativesTargetDir>target/natives</nativesTargetDir>
+                    <separateDirs>false</separateDirs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
