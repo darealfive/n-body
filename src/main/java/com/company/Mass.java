@@ -63,6 +63,16 @@ public class Mass extends Node implements Acceleratable {
 
     double deltaVelocity, radians, acceleration, force;
 
+    /**
+     * Checks whether this object collides with the provided one.
+     *
+     * @param body the body to check the intersection with
+     * @return boolean true if the bodies are colliding, false otherwise
+     */
+    boolean collidesWith(Mass body) {
+        return shape.intersects(body.shape);
+    }
+
     Mass(Shape shape, double mass) {
 
         super(shape);
