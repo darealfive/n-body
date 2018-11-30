@@ -67,7 +67,7 @@ class SpaceTime {
     void run(double delta) {
 
         this.delta = delta;
-        //physicsEngine = new BrutforcePhysics(this);
+        //physicsEngine = new BrutForcePhysics(this);
         physicsEngine = new BarnesHutPhysics(this, (short) 1);
         physicsEngine.run();
     }

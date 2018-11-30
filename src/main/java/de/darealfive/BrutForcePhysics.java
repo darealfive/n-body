@@ -5,9 +5,9 @@ import org.newdawn.slick.Graphics;
 /**
  * Solves calculation problems in our space-time in a brute force approach.
  */
-public class BrutforcePhysics extends PhysicsEngine {
+public class BrutForcePhysics extends PhysicsEngine {
 
-    BrutforcePhysics(SpaceTime spaceTime) {
+    BrutForcePhysics(SpaceTime spaceTime) {
         super(spaceTime);
     }
 
